@@ -42,7 +42,7 @@ class OilBlend:
                  additive_density: float,
                  oil_density: float,
                  metal_content: dict,
-                 ash_contrib: float = ASH_CONTRIB
+                 ash_contrib: dict = ASH_CONTRIB
                  ):
         """Class initializer."""
         self.additive_percent = additive_percent
