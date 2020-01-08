@@ -74,9 +74,9 @@ class OilBlend:
         SA = -----------------------------------------------------------------------
                                             100
 
-        metal: ['zinc', 'barium', 'sodium', 'calcium',
+        metal: Any of these: 'zinc', 'barium', 'sodium', 'calcium',
                'magnesium', 'lead', 'boron', 'potassium',
-               'manganese', 'molybdenum', 'copper']
+               'manganese', 'molybdenum', 'copper'
         """
         return round(self.metal_content[metal] *
                      self.ash_contrib[metal.lower()] *
