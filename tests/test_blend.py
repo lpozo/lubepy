@@ -29,19 +29,16 @@ class TestOilBlend:
     """Class to test OilBlend."""
 
     def setup(self):
-        self.blend = OilBlend(8.0, 0.959, 0.881, 0.0)
+        self.blend = OilBlend(additive_percent=8.0,
+                              additive_density=0.959,
+                              oil_density=0.881,
+                              metal_content=dict(Calcium=0.47,
+                                                 Magnesium=1.15,
+                                                 zinc=1.66))
 
     def test_additive_percent_mass(self):
         assert self.blend.additive_percent_mass() == 8.71
 
-    # def test_total_ash(self):
-    #     blend = OilBlend(additive_percent=8.5)
-    #     assert blend.total_ash(Calcium=0.47,
-    #                            Magnesium=1.15,
-    #                            zinc=1.66) == 0.83
-
-    # def test_total_ash_string_input(self):
-    #     blend = OilBlend(additive_percent='8.5 ')
-    #     assert blend.total_ash(Calcium='.47',
-    #                            Magnesium=' 1,15',
-    #                            zinc=1.66) == 0.83
+    def test_total_ash(self):
+        self.blend.additive_percent = 8.5
+        assert self.blend.total_ash() == 0.83
