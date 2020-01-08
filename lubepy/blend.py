@@ -42,9 +42,15 @@ class OilBlend:
                  additive_density: float,
                  oil_density: float,
                  metal_content: dict,
-                 ash_contrib: dict = ASH_CONTRIB
-                 ):
-        """Class initializer."""
+                 ash_contrib: dict = ASH_CONTRIB):
+        """Class initializer.
+
+        additive_percent: Total % of additive in the blend (% volume)
+        additive_density: Additive package density (kg/L)
+        oil_density: Density of the finished oil (kg/L)
+        metal_content: Metallic additive content (% mass)
+            e.g {'Calcium': 0.47, 'Magnesium': 1.15, 'Zinc': 1.66}
+        """
         self.additive_percent = additive_percent
         self.additive_density = additive_density
         self.oil_density = oil_density
@@ -58,11 +64,10 @@ class OilBlend:
         Additive (% mass) = ---------------------------------------------------
                                        Density of Finished Oil (kg/L)
         """
-
         return round((self.additive_density * self.additive_percent) /
                      self.oil_density, 2)
 
-    def sulfated_ash(self, metal: str) -> float:
+    def ash_per_metal(self, metal: str) -> float:
         """Calculate the % of Sulfated Ash (SA) of a motor oil.
 
              Metal Content (% mass) * Ash Contribution * Additive Package (% volume)
@@ -73,12 +78,11 @@ class OilBlend:
                'magnesium', 'lead', 'boron', 'potassium',
                'manganese', 'molybdenum', 'copper']
         """
-
         return round(self.metal_content[metal] *
                      self.ash_contrib[metal.lower()] *
                      self.additive_percent / 100, 3)
 
-    def total_ash(self, **metal_contents):
+    def total_ash(self):
         """Calculate the total content of sulfated ash."""
-        return round(sum(self.sulfated_ash(metal)
-                         for metal in metal_contents.values()), 2)
+        return round(sum(self.ash_per_metal(metal)
+                         for metal in self.metal_content), 2)
