@@ -23,12 +23,4 @@
 
 
 class ConceptError(Exception):
-    pass
-
-
-class InvertedViscosityError(ConceptError):
-    pass
-
-
-class ViscosityIntervalError(ConceptError):
-    pass
+    """Custom exception class to handle concept errors."""
