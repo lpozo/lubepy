@@ -20,32 +20,65 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
-"""This module provides a setup.py script for lubepy."""
+# Note: To use the 'upload' functionality of this file, you must:
+#   $ pipenv install twine --dev
 
+from pathlib import Path
+from typing import List
+from typing import Dict
+
+from setuptools import find_packages
+from setuptools import setup
+
+# What packages are required for this module to be executed?
+REQUIRED: List[str] = [
+    # 'requests', 'maya', 'records',
+]
+
+# What packages are optional?
+EXTRAS: Dict[str, str] = {
+    # 'fancy feature': ['django'],
+}
+
+__here__ = Path().cwd()
+
+# Load the package's __init__.py module as a dictionary.
+__about__: Dict = {}
+with Path(__here__, 'lubepy', '__init__.py').open(encoding='UTF-8') as f:
+    exec(f.read(), __about__)
+
+# Import the README and use it as the long-description.
 try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
-
-DESC = 'lubepy is a library to perform calculations on machinery lubrication.'
-LONG_DESC = ''
+    with Path(__here__, 'README.md').open(encoding='utf-8') as f:
+        __long_description__ = '\n' + f.read()
+except FileNotFoundError:
+    __long_description__ = __about__['DESCRIPTION']
 
 
-if __name__ == '__main__':
-    setup(name='lubepy',
-          version='0.1',
-          description=DESC,
-          long_description=LONG_DESC,
-          author='Leodanis Pozo Ramos',
-          author_email='lpozor78@gmail.com',
-          maintainer='Leodanis Pozo Ramos',
-          maintainer_email='lpozor78@gmail.com',
-          url='https://github.com/lpozo/lubepy',
-          license='GNU General Public License, Version 2, June 1991',
-          platforms=['linux', 'win32'],
-          packages=['lubepy'],
-          data_files=[('share/applications/Lubricalc',
-                       ['AUTHORS', 'LICENSE',
-                        'requirements.txt'])],
-          keywords='machinery lubrication, oil, grease, lubrication engineering'
-          )
+# Where the magic happens:
+setup(
+    name=__about__['NAME'],
+    version=__about__['__version__'],
+    description=__about__['DESCRIPTION'],
+    long_description=__long_description__,
+    long_description_content_type='text/markdown',
+    author=__about__['AUTHOR'],
+    author_email=__about__['EMAIL'],
+    python_requires=__about__['REQUIRES_PYTHON'],
+    url=__about__['URL'],
+    packages=find_packages(exclude=["tests"]),
+    install_requires=REQUIRED,
+    extras_require=EXTRAS,
+    include_package_data=True,
+    license='GNU General Public License, Version 2, June 1991',
+    classifiers=[
+        'License :: OSI Approved :: GNU GPL v2',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: Implementation :: CPython',
+    ],
+    keywords='machinery lubrication, oil, grease, lubrication engineering',
+)
