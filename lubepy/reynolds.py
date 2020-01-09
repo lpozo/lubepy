@@ -19,22 +19,30 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
-from lubricalc.validator import validate
+
+def reynolds_number(velocity: float, length: float, viscosity: float) -> float:
+    """Calculate Reynolds number (Re)."""
+    return Reynolds(velocity, length, viscosity).reynolds_number()
+
+
+def flow_type(velocity: float, length: float, viscosity: float) -> str:
+    """Determine the flow type of a fluid."""
+    return Reynolds(velocity, length, viscosity).flow_type()
 
 
 class Reynolds:
-    """Class for calculations on Reynolds Number (Re)."""
+    """Class for calculations related to Reynolds number."""
 
-    def __init__(self):
-        self._velocity = None
-        self._viscosity = None
-        self._length = None
+    def __init__(self, velocity: float, length: float, viscosity: float):
+        self.velocity = velocity
+        self.length = length
+        self.viscosity = viscosity
 
-    def reynolds_number(self, velocity, length, viscosity):
+    def reynolds_number(self) -> float:
         """Calculate Reynolds number (Re).
 
-              V * Lc
-        Re = --------       [(m/s m) / m^2/s]
+            V * Lc
+        Re = --------   [(m/s m) / m^2/s]
                 v
         where:
         V: velocity (m/s)
@@ -43,54 +51,25 @@ class Reynolds:
                 D: diameter
             For square session Lc = L
                 L: side
-                                         (2 * a * b)
+                                        (2 * a * b)
             For rectangular session Lc = -----------
-                                           (a + b)
+                                        (a + b)
                 a, b: sides
         v: Kinematic Viscosity (m^2/s)
         """
-        # Validate input data
-        self.viscosity = viscosity
-        self.velocity = velocity
-        self.length = length
+        return round(self.velocity * self.length / self.viscosity, 1)
 
-        return round(self._velocity * self._length / self._viscosity, 1)
-
-    def flow_type(self, velocity, length, viscosity):
+    def flow_type(self) -> str:
         """Determine the flow type of a fluid.
 
         Re < 2000 => Laminar flow
         2000.0 < reynolds < 4000.0 => Mixed flow
         Re > 4000 => Turbulent flow
         """
-        reynolds = self.reynolds_number(velocity, length, viscosity)
+        reynolds = self.reynolds_number()
         if reynolds <= 2000.0:
             return 'laminar'
         if reynolds >= 4000.0:
             return 'turbulent'
-        if 2000.0 < reynolds < 4000.0:
-            return 'mixed'
 
-    @property
-    def velocity(self):
-        return self._viscosity
-
-    @velocity.setter
-    def velocity(self, value):
-        validate(self, 'Velocity', value, '_velocity', limit=2)
-
-    @property
-    def viscosity(self):
-        return self._viscosity
-
-    @viscosity.setter
-    def viscosity(self, value):
-        validate(self, 'Viscosity', value, '_viscosity', limit=2)
-
-    @property
-    def length(self):
-        return self._length
-
-    @length.setter
-    def length(self, value):
-        validate(self, 'Length', value, '_length', strict=True)
+        return 'mixed'
