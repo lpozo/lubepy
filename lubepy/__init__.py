@@ -19,4 +19,14 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
-"""This module provides lubricalc package."""
+"""This module provides lubepy package."""
+
+# Package meta-data.
+NAME = 'lubepy'
+DESCRIPTION = "lubepy provides basic set of machinery lubrication calculus."
+URL = 'https://github.com/lpozo/lubepy'
+EMAIL = 'lpozor78@gmail.com'
+AUTHOR = 'Leodanis Pozo Ramos'
+REQUIRES_PYTHON = '>=3.8.1'
+VERSION = (0, 1, 0)
+__version__ = '.'.join(map(str, VERSION))
