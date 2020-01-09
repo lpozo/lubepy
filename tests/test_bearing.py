@@ -30,7 +30,7 @@ from lubepy import bearing
 class TestBearing:
     """Class to test Bearing class."""
 
-    def setup(self):
+    def setup_method(self):
         self.bearing = bearing.Bearing(0.0, 0.0, 0.0)
 
     @pytest.mark.parametrize(

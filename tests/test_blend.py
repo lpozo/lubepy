@@ -28,7 +28,7 @@ from lubepy.blend import OilBlend
 class TestOilBlend:
     """Class to test OilBlend."""
 
-    def setup(self):
+    def setup_method(self):
         self.blend = OilBlend(additive_percent=8.0,
                               additive_density=0.959,
                               oil_density=0.881,
