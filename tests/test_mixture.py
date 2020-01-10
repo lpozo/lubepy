@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# File name: tests_mixture.py
+#
+# Copyright (C) 2018 Leodanis Pozo Ramos <lpozor78@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+# MA 02110-1301, USA.
+
+"""This module provides tests for mixture.py."""
+
+from lubepy.mixture import OilMixture
+from lubepy.mixture import mixture_viscosity
+
+
+class TestOilMixture:
+    """Class to test OilMixture class."""
+
+    def setup_method(self):
+        self.mixture = OilMixture(first_viscosity=20,
+                                  second_viscosity=16,
+                                  first_oil_percent=45)
+
+    def test_mixture_viscosity(self):
+        """Test mixture viscosity (class API)."""
+        assert self.mixture.mixture_viscosity('100') == 17.67
+
+    def test_mixture_viscosity_func(self):
+        """Test mixture viscosity (func API)."""
+        assert mixture_viscosity(first_viscosity=20,
+                                 second_viscosity=16,
+                                 first_oil_percent=45,
+                                 temperature='100') == 17.67
+
+    # def test_mix_proportions(self):
+    #     assert OilMixture().mix_proportions(
+    #         680, 220, 460, '40') == (67.32, 32.68)
