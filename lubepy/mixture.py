@@ -25,6 +25,16 @@ from collections import namedtuple
 import math
 
 
+def mixture_viscosity(first_viscosity: float,
+                      second_viscosity: float,
+                      first_oil_percent: float,
+                      temperature: str) -> float:
+    """Return the resulting viscosity of a mix of two base oils."""
+    return OilMixture(first_viscosity,
+                      second_viscosity,
+                      first_oil_percent).mixture_viscosity(temperature)
+
+
 class OilMixture:
     """Class to provide calculations on oil mixtures."""
 
