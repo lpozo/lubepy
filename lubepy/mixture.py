@@ -25,30 +25,29 @@ from collections import namedtuple
 import math
 
 
-def mixture_viscosity(first_viscosity: float,
-                      second_viscosity: float,
-                      first_oil_percent: float,
-                      temperature: str) -> float:
+def mixture_viscosity(
+    first_viscosity: float,
+    second_viscosity: float,
+    first_oil_percent: float,
+    temperature: str,
+) -> float:
     """Return the resulting viscosity of a mix of two base oils."""
-    return OilMixture(first_viscosity,
-                      second_viscosity,
-                      first_oil_percent).mixture_viscosity(temperature)
+    return OilMixture(
+        first_viscosity, second_viscosity, first_oil_percent
+    ).mixture_viscosity(temperature)
 
 
 class OilMixture:
     """Class to provide calculations on oil mixtures."""
 
-    def __init__(self,
-                 first_viscosity: float,
-                 second_viscosity: float,
-                 first_oil_percent: float):
+    def __init__(
+        self, first_viscosity: float, second_viscosity: float, first_oil_percent: float
+    ):
         """Class initializer."""
         self.first_viscosity = first_viscosity
         self.second_viscosity = second_viscosity
         self.first_oil_percent = first_oil_percent
-        self.temp_map = {'100': 1.8,
-                         '40': 4.1,
-                         '-5': 1.9}
+        self.temp_map = {"100": 1.8, "40": 4.1, "-5": 1.9}
 
     def mixture_viscosity(self, temperature: str) -> float:
         """Return the resulting viscosity of a mix of two base oils.

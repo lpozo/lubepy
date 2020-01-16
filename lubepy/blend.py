@@ -21,28 +21,32 @@
 
 """This module provides OilBlend Class."""
 
-ASH_CONTRIB = {'zinc': 1.50,
-               'barium': 1.70,
-               'sodium': 3.09,
-               'calcium': 3.40,
-               'magnesium': 4.95,
-               'lead': 1.464,
-               'boron': 3.22,
-               'potassium': 2.23,
-               'manganese': 1.291,
-               'molybdenum': 1.5,
-               'copper': 1.252}
+ASH_CONTRIB = {
+    "zinc": 1.50,
+    "barium": 1.70,
+    "sodium": 3.09,
+    "calcium": 3.40,
+    "magnesium": 4.95,
+    "lead": 1.464,
+    "boron": 3.22,
+    "potassium": 2.23,
+    "manganese": 1.291,
+    "molybdenum": 1.5,
+    "copper": 1.252,
+}
 
 
 class OilBlend:
     """Class to calculate some parameters of a motor oil blend."""
 
-    def __init__(self,
-                 additive_percent: float,
-                 additive_density: float,
-                 oil_density: float,
-                 metal_content: dict,
-                 ash_contrib: dict = ASH_CONTRIB):
+    def __init__(
+        self,
+        additive_percent: float,
+        additive_density: float,
+        oil_density: float,
+        metal_content: dict,
+        ash_contrib: dict = ASH_CONTRIB,
+    ):
         """Class initializer.
 
         additive_percent: Total % of additive in the blend (% volume)
@@ -64,8 +68,9 @@ class OilBlend:
         Additive (% mass) = ---------------------------------------------------
                                        Density of Finished Oil (kg/L)
         """
-        return round((self.additive_density * self.additive_percent) /
-                     self.oil_density, 2)
+        return round(
+            (self.additive_density * self.additive_percent) / self.oil_density, 2
+        )
 
     def ash_per_metal(self, metal: str) -> float:
         """Calculate the % of Sulfated Ash (SA) of a motor oil.
@@ -78,11 +83,14 @@ class OilBlend:
                'magnesium', 'lead', 'boron', 'potassium',
                'manganese', 'molybdenum', 'copper'
         """
-        return round(self.metal_content[metal] *
-                     self.ash_contrib[metal.lower()] *
-                     self.additive_percent / 100, 3)
+        return round(
+            self.metal_content[metal]
+            * self.ash_contrib[metal.lower()]
+            * self.additive_percent
+            / 100,
+            3,
+        )
 
     def total_ash(self):
         """Calculate the total content of sulfated ash."""
-        return round(sum(self.ash_per_metal(metal)
-                         for metal in self.metal_content), 2)
+        return round(sum(self.ash_per_metal(metal) for metal in self.metal_content), 2)

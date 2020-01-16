@@ -30,18 +30,21 @@ class Validator:
     @staticmethod
     def validate_float(name, value):
         """Validate input value as float."""
-        value = str(value).replace(',', '.').strip()
+        value = str(value).replace(",", ".").strip()
         try:
             value = float(value)
         except ValueError:
-            if value == '':
-                value = 'null'
-            raise ValueError('{0}: Input value must be a valid number, '
-                             'not: {1}'.format(name, value))
+            if value == "":
+                value = "null"
+            raise ValueError(
+                "{0}: Input value must be a valid number, "
+                "not: {1}".format(name, value)
+            )
 
-        if value in (float('inf'), float('-inf')):
-            raise ValueError('{0}: Input value must be a valid number, '
-                             'not: infinite'.format(name))
+        if value in (float("inf"), float("-inf")):
+            raise ValueError(
+                "{0}: Input value must be a valid number, " "not: infinite".format(name)
+            )
 
         return value
 
@@ -50,13 +53,15 @@ class Validator:
         """Validate value is greater than a given value (limit)."""
         if not strict:
             if value < limit:
-                raise ConceptError('{0}: Input value must be '
-                                   'greater than or equal to {1}'.format(
-                                        name, limit))
+                raise ConceptError(
+                    "{0}: Input value must be "
+                    "greater than or equal to {1}".format(name, limit)
+                )
         else:
             if value <= limit:
-                raise ConceptError('{0}: Input value must be '
-                                   'greater than {1}'.format(name, limit))
+                raise ConceptError(
+                    "{0}: Input value must be " "greater than {1}".format(name, limit)
+                )
 
 
 def validate(obj, name, value, attr, limit=0, strict=False):
@@ -76,14 +81,14 @@ class Float:
 
     def __set__(self, instance, value):
         """Validate input value as float."""
-        value = str(value).replace(',', '.').strip()
+        value = str(value).replace(",", ".").strip()
         try:
             value = float(value)
         except ValueError:
-            raise ValueError('Input value must be a valid float number')
+            raise ValueError("Input value must be a valid float number")
 
-        if value in (float('inf'), float('-inf')):
-            raise ValueError('Input value must be a valid float number')
+        if value in (float("inf"), float("-inf")):
+            raise ValueError("Input value must be a valid float number")
 
         self._value = value
 
@@ -98,7 +103,7 @@ class NonZeroPositiveFloat:
         """Validate input value as float."""
         self.__value = value
         if self.__value <= 0:
-            raise ValueError('Input value must be greater than 0')
+            raise ValueError("Input value must be greater than 0")
 
         self._value = self.__value
 
@@ -114,7 +119,7 @@ class Viscosity:
     def __set__(self, instance, value):
         self.__viscosity = value
         if self.__viscosity < 2:
-            raise ConceptError('Viscosity must be greater or equal to 2')
+            raise ConceptError("Viscosity must be greater or equal to 2")
 
         self._viscosity = self.__viscosity
 
@@ -129,7 +134,7 @@ class ViscosityIndex:
 
     def __set__(self, instance, value):
         if value < 0.0 or value > 400.0:
-            raise ConceptError('Viscosity Index must be between 0 and 400')
+            raise ConceptError("Viscosity Index must be between 0 and 400")
 
         self._index = value
 
@@ -145,6 +150,6 @@ class Temperature:
         if self.__temperature >= -50:
             self._temperature = self.__temperature
         else:
-            raise ConceptError('Temperature must be greater -50°C')
+            raise ConceptError("Temperature must be greater -50°C")
 
     __temperature = Float()

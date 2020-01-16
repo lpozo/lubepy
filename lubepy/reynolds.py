@@ -68,8 +68,8 @@ class Reynolds:
         """
         reynolds = self.reynolds_number()
         if reynolds <= 2000.0:
-            return 'laminar'
+            return "laminar"
         if reynolds >= 4000.0:
-            return 'turbulent'
+            return "turbulent"
 
-        return 'mixed'
+        return "mixed"
