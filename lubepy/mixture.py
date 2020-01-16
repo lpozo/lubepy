@@ -70,24 +70,28 @@ class OilMixture:
 
         return round(mix_viscosity, 2)
 
-    # def mix_proportions(self, viscosity0, viscosity1,
-    #                     mix_viscosity, temperature):
-    #     """Return proportions to get a mixture of a given viscosity."""
-    #     # Validate Data
-    #     self.viscosity0 = viscosity0
-    #     self.viscosity1 = viscosity1
-    #     self.mix_viscosity = mix_viscosity
+    def mixture_proportions(self, desired_viscosity: float, temperature: str) -> tuple:
+        """Return proportions to get a mixture of a given viscosity.
 
-    #     if not(self._viscosity0 < self._mix_viscosity < self._viscosity1 or
-    #             self._viscosity1 < self._mix_viscosity < self._viscosity0):
-    #         raise ViscosityIntervalError('Mixture viscosity must be inside '
-    #                                      'the viscosity interval')
+        oil1_percent = 100 * (math.log(a / c) / math.log(b / c))
 
-    #     K = self.temp_map[temperature]
-    #     a = math.log(self.mix_viscosity + K)
-    #     b = math.log(self._viscosity0 + K)
-    #     c = math.log(self._viscosity1 + K)
-    #     oil1_percent = 10000 * (math.log(a / c) / math.log(b / c)) / 100
-    #     oil2_percent = 100 - oil1_percent
-    #     Proportions = namedtuple('Proportions', ['oil1', 'oil2'])
-    #     return Proportions(round(oil1_percent, 2), round(oil2_percent, 2))
+        Where:
+            K: Temperature coefficient
+            a = math.log(desired_viscosity + K)
+            b = math.log(KV1 + K)
+            c = math.log(KV2 + K)
+        """
+
+        # if not(self.first_viscosity < desired_viscosity < self.second_viscosity or
+        #         self.second_viscosity < desired_viscosity < self.fi):
+        #     raise ViscosityIntervalError('Mixture viscosity must be inside '
+        #                                  'the viscosity interval')
+
+        K = self.temp_map[temperature]
+        a = math.log(desired_viscosity + K)
+        b = math.log(self.first_viscosity + K)
+        c = math.log(self.second_viscosity + K)
+        oil1_percent = 100 * (math.log(a / c) / math.log(b / c))
+        oil2_percent = 100 - oil1_percent
+        Proportions = namedtuple("Proportions", ["oil1", "oil2"])
+        return Proportions(round(oil1_percent, 2), round(oil2_percent, 2))
