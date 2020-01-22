@@ -40,13 +40,12 @@ class OilBlend:
     """Class to calculate some parameters of a motor oil blend."""
 
     def __init__(
-        self,
-        additive_percent: float,
-        additive_density: float,
-        oil_density: float,
-        metal_content: dict,
-        ash_contrib: dict = ASH_CONTRIB,
-    ):
+            self,
+            additive_percent: float,
+            additive_density: float,
+            oil_density: float,
+            metal_content: dict,
+            ash_contrib: dict = ASH_CONTRIB):
         """Class initializer.
 
         additive_percent: Total % of additive in the blend (% volume)
@@ -69,7 +68,8 @@ class OilBlend:
                                        Density of Finished Oil (kg/L)
         """
         return round(
-            (self.additive_density * self.additive_percent) / self.oil_density, 2
+            (self.additive_density * self.additive_percent) /
+            self.oil_density, 2
         )
 
     def ash_per_metal(self, metal: str) -> float:
@@ -93,4 +93,8 @@ class OilBlend:
 
     def total_ash(self):
         """Calculate the total content of sulfated ash."""
-        return round(sum(self.ash_per_metal(metal) for metal in self.metal_content), 2)
+        return round(
+            sum(self.ash_per_metal(metal)
+                for metal in self.metal_content),
+            2
+        )
