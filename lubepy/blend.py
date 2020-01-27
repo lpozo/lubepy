@@ -36,6 +36,25 @@ ASH_CONTRIB = {
 }
 
 
+def additive_percent_mass(
+    additive_percent: float, additive_density: float, oil_density: float
+) -> float:
+    """Calculate the % by mass of Additive in a motor oil."""
+    return OilBlend(
+        additive_percent, additive_density, oil_density, {}
+    ).additive_percent_mass()
+
+
+def ash_per_metal(metal: str, metal_content: dict, additive_percent: float) -> float:
+    """Calculate the % of Sulfated Ash (SA) of a motor oil."""
+    return OilBlend(additive_percent, 0.0, 0.0, metal_content).ash_per_metal(metal)
+
+
+def total_ash(metal_content: dict, additive_percent: float) -> float:
+    """Calculate the total content of sulfated ash."""
+    return OilBlend(additive_percent, 0.0, 0.0, metal_content).total_ash()
+
+
 class OilBlend:
     """Class to calculate some parameters of a motor oil blend."""
 
