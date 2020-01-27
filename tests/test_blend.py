@@ -23,22 +23,53 @@
 """This module provides tests for blend.py."""
 
 from lubepy.blend import OilBlend
+from lubepy.blend import additive_percent_mass
+from lubepy.blend import ash_per_metal
+from lubepy.blend import total_ash
 
 
 class TestOilBlend:
     """Class to test OilBlend."""
 
     def setup_method(self):
-        self.blend = OilBlend(additive_percent=8.0,
-                              additive_density=0.959,
-                              oil_density=0.881,
-                              metal_content=dict(Calcium=0.47,
-                                                 Magnesium=1.15,
-                                                 zinc=1.66))
+        self.blend = OilBlend(
+            additive_percent=8.0,
+            additive_density=0.959,
+            oil_density=0.881,
+            metal_content=dict(Calcium=0.47, Magnesium=1.15, Zinc=1.66),
+        )
 
     def test_additive_percent_mass(self):
         assert self.blend.additive_percent_mass() == 8.71
 
+    def test_additive_percent_mass_func(self):
+        assert (
+            additive_percent_mass(
+                additive_percent=8.0, additive_density=0.959, oil_density=0.881,
+            )
+            == 8.71
+        )
+
+    def test_ash_per_metal(self):
+        assert self.blend.ash_per_metal("Calcium") == 0.128
+
+    def test_ash_per_metal_func(self):
+        assert (
+            ash_per_metal(
+                "Calcium", metal_content=dict(Calcium=0.47), additive_percent=8.0
+            )
+            == 0.128
+        )
+
     def test_total_ash(self):
         self.blend.additive_percent = 8.5
         assert self.blend.total_ash() == 0.83
+
+    def test_total_ash_func(self):
+        assert (
+            total_ash(
+                metal_content=dict(Calcium=0.47, Magnesium=1.15, Zinc=1.66),
+                additive_percent=8.5,
+            )
+            == 0.83
+        )
