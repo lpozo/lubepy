@@ -29,19 +29,13 @@ def grace_amount(outer_diameter: float, width: float) -> float:
     return Bearing(outer_diameter, 0.0, width).grease_amount()
 
 
-def lubrication_frequency(
-        inner_diameter: float,
-        rpm: float,
-        **factors: dict) -> float:
+def lubrication_frequency(inner_diameter: float, rpm: float, **factors: dict) -> float:
     """Return the amount of grease (g) needed for re-lubrication."""
     bearing = Bearing(0.0, inner_diameter, 0.0)
     return bearing.lubrication_frequency(rpm, **factors)
 
 
-def velocity_factor(
-        outer_diameter: float,
-        inner_diameter: float,
-        rpm: float) -> float:
+def velocity_factor(outer_diameter: float, inner_diameter: float, rpm: float) -> float:
     """Calculate the velocity factor of a bearing."""
     bearing = Bearing(outer_diameter, inner_diameter, 0.0)
     return bearing.velocity_factor(rpm)
@@ -50,10 +44,7 @@ def velocity_factor(
 class Bearing:
     """Class to define calculations related with bearings."""
 
-    def __init__(
-            self, outer_diameter: float,
-            inner_diameter: float,
-            width: float):
+    def __init__(self, outer_diameter: float, inner_diameter: float, width: float):
         """Class initializer."""
         self.outer_diameter = outer_diameter
         self.inner_diameter = inner_diameter

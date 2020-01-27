@@ -26,10 +26,11 @@ import math
 
 
 def mixture_viscosity(
-        first_viscosity: float,
-        second_viscosity: float,
-        first_oil_percent: float,
-        temperature: str) -> float:
+    first_viscosity: float,
+    second_viscosity: float,
+    first_oil_percent: float,
+    temperature: str,
+) -> float:
     """Return the resulting viscosity of a mix of two base oils."""
     return OilMixture(
         first_viscosity, second_viscosity, first_oil_percent
@@ -40,9 +41,8 @@ class OilMixture:
     """Class to provide calculations on oil mixtures."""
 
     def __init__(
-            self, first_viscosity: float,
-            second_viscosity: float,
-            first_oil_percent: float):
+        self, first_viscosity: float, second_viscosity: float, first_oil_percent: float
+    ):
         """Class initializer."""
         self.first_viscosity = first_viscosity
         self.second_viscosity = second_viscosity
@@ -69,9 +69,7 @@ class OilMixture:
 
         return round(mix_viscosity, 2)
 
-    def mixture_proportions(
-            self, desired_viscosity: float,
-            temperature: str) -> tuple:
+    def mixture_proportions(self, desired_viscosity: float, temperature: str) -> tuple:
         """Return proportions to get a mixture of a given viscosity.
 
         oil1_percent = 100 * (math.log(a / c) / math.log(b / c))
