@@ -57,6 +57,7 @@ def total_ash(metal_content: dict, additive_percent: float) -> float:
 
 class OilBlend:
     """Class to calculate some parameters of a motor oil blend."""
+    ash_contrib: dict = ASH_CONTRIB
 
     def __init__(
         self,
@@ -64,7 +65,6 @@ class OilBlend:
         additive_density: float,
         oil_density: float,
         metal_content: dict,
-        ash_contrib: dict = ASH_CONTRIB,
     ):
         """Class initializer.
 
@@ -78,7 +78,6 @@ class OilBlend:
         self.additive_density = additive_density
         self.oil_density = oil_density
         self.metal_content = metal_content
-        self.ash_contrib = ash_contrib
 
     def additive_percent_mass(self):
         """Calculate the % by mass of Additive in a motor oil.
