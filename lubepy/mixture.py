@@ -32,9 +32,21 @@ def mixture_viscosity(
     temperature: str,
 ) -> float:
     """Return the resulting viscosity of a mix of two base oils."""
-    return OilMixture(
-        first_viscosity, second_viscosity,
-    ).mixture_viscosity(first_oil_percent, temperature)
+    return OilMixture(first_viscosity, second_viscosity,).mixture_viscosity(
+        first_oil_percent, temperature
+    )
+
+
+def mixture_proportions(
+    first_viscosity: float,
+    second_viscosity: float,
+    desired_viscosity: float,
+    temperature: str,
+) -> tuple:
+    """Return proportions to get a mixture of a given viscosity."""
+    return OilMixture(first_viscosity, second_viscosity,).mixture_proportions(
+        desired_viscosity, temperature
+    )
 
 
 class OilMixture:
