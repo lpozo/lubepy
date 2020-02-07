@@ -24,12 +24,12 @@
 import math
 
 
-def viscosity_at_40(viscosity100, viscosity_index):
-    """Calculate the Kinematic Viscosity at 40°C."""
+def viscosity_at_40(viscosity100: float, viscosity_index: float) -> float:
+    """Calculate the Kinematic Viscosity (KV) at 40°C."""
     temp_viscosity_index = viscosity_index
     n = viscosity100
     while temp_viscosity_index >= viscosity_index and n <= 2000:
-        temp_viscosity_index = _calculate_viscosity_index(n, viscosity100)
+        temp_viscosity_index = _viscosity_index(n, viscosity100)
         n += 0.05
     return round((n * 100 + 0.1) / 100, 2)
 
@@ -39,7 +39,7 @@ def viscosity_at_100(viscosity40, v_index):
     temp_v_index = self._v_index
     n = 2.0
     while temp_v_index <= self._v_index and n <= 500.0:
-        temp_v_index = self._calculate_viscosity_index(self._viscosity40, n)
+        temp_v_index = self._viscosity_index(self._viscosity40, n)
         n += 0.01
     return round((n * 100 + 0.01) / 100, 2)
 
@@ -103,12 +103,12 @@ def viscosity_index(viscosity40, viscosity100):
     N = --------------------------
                 log10(KV100)
     """
-    v_index = self._calculate_viscosity_index(viscosity40, viscosity100)
+    v_index = self._viscosity_index(viscosity40, viscosity100)
     self._validate_viscosity_index(v_index)
     return v_index
 
 
-def _calculate_viscosity_index(viscosity40, viscosity100):
+def _viscosity_index(viscosity40, viscosity100):
     """Calculate the Viscosity Index (VI) by ASTM-D2270."""
 
     up = float("inf")
@@ -134,19 +134,17 @@ def _calculate_viscosity_index(viscosity40, viscosity100):
     a, b, c, d, e, f = [0] * 6
 
     for k, v in coefficients.items():
-        if k[0] <= self._viscosity100 < k[1]:
+        if k[0] <= viscosity100 < k[1]:
             a, b, c, d, e, f = v
             break
 
-    L = a * self._viscosity100 ** 2 + b * self._viscosity100 + c
+    L = a * viscosity100 ** 2 + b * viscosity100 + c
 
-    H = d * self._viscosity100 ** 2 + e * self._viscosity100 + f
+    H = d * viscosity100 ** 2 + e * viscosity100 + f
 
-    if self._viscosity40 >= H:
-        return round(((L - self._viscosity40) / (L - H)) * 100)
+    if viscosity40 >= H:
+        return round(((L - viscosity40) / (L - H)) * 100)
 
-    N = (math.log10(H) - math.log10(self._viscosity40)) / math.log10(
-        self._viscosity100
-    )
+    N = (math.log10(H) - math.log10(viscosity40)) / math.log10(viscosity100)
 
     return round(((10 ** N - 1) / 0.00715) + 100)
