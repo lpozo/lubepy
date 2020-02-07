@@ -27,29 +27,28 @@ import math
 
 def mixture_viscosity(
     first_viscosity: float,
-    second_viscosity: float,
     first_oil_percent: float,
+    second_viscosity: float,
     temperature: str,
 ) -> float:
     """Return the resulting viscosity of a mix of two base oils."""
     return OilMixture(
-        first_viscosity, second_viscosity, first_oil_percent
-    ).mixture_viscosity(temperature)
+        first_viscosity, second_viscosity,
+    ).mixture_viscosity(first_oil_percent, temperature)
 
 
 class OilMixture:
     """Class to provide calculations on oil mixtures."""
 
     def __init__(
-        self, first_viscosity: float, second_viscosity: float, first_oil_percent: float
+        self, first_viscosity: float, second_viscosity: float,
     ):
         """Class initializer."""
         self.first_viscosity = first_viscosity
         self.second_viscosity = second_viscosity
-        self.first_oil_percent = first_oil_percent
         self.temp_map = {"100": 1.8, "40": 4.1, "-5": 1.9}
 
-    def mixture_viscosity(self, temperature: str) -> float:
+    def mixture_viscosity(self, first_oil_percent, temperature: str) -> float:
         """Return the resulting viscosity of a mix of two base oils.
 
         Mixture KV = e ^ (a * e ^ (x1 * log(b / a))) - K
@@ -62,7 +61,7 @@ class OilMixture:
                 KV1, KV2: Kinematic Viscosity of oil # 1 and # 2 (cSt)
         """
         K = self.temp_map[temperature]
-        x1 = self.first_oil_percent / 100
+        x1 = first_oil_percent / 100
         a = math.log(self.second_viscosity + K)
         b = math.log(self.first_viscosity + K)
         mix_viscosity = math.exp(a * math.exp(x1 * math.log(b / a))) - K
@@ -72,7 +71,7 @@ class OilMixture:
     def mixture_proportions(self, desired_viscosity: float, temperature: str) -> tuple:
         """Return proportions to get a mixture of a given viscosity.
 
-        oil1_percent = 100 * (math.log(a / c) / math.log(b / c))
+        first_oil_percent = 100 * (math.log(a / c) / math.log(b / c))
 
         Where:
             K: Temperature coefficient
@@ -90,7 +89,10 @@ class OilMixture:
         a = math.log(desired_viscosity + K)
         b = math.log(self.first_viscosity + K)
         c = math.log(self.second_viscosity + K)
-        oil1_percent = 100 * (math.log(a / c) / math.log(b / c))
-        oil2_percent = 100 - oil1_percent
-        Proportions = namedtuple("Proportions", ["oil1", "oil2"])
-        return Proportions(round(oil1_percent, 2), round(oil2_percent, 2))
+        first_oil_percent = 100 * (math.log(a / c) / math.log(b / c))
+        second_oil_percent = 100 - first_oil_percent
+        Proportions = namedtuple(
+            "Proportions", ["first_oil_percent", "second_oil_percent"]
+        )
+
+        return Proportions(round(first_oil_percent, 2), round(second_oil_percent, 2))
