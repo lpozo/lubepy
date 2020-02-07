@@ -24,6 +24,7 @@
 
 from lubepy.mixture import OilMixture
 from lubepy.mixture import mixture_viscosity
+from lubepy.mixture import mixture_proportions
 
 
 class TestOilMixture:
@@ -46,3 +47,6 @@ class TestOilMixture:
 
     def test_mix_proportions(self):
         assert OilMixture(680, 220).mixture_proportions(460, '40') == (67.32, 32.68)
+
+    def test_mix_proportions_func(self):
+        assert mixture_proportions(680, 220, 460, '40') == (67.32, 32.68)
