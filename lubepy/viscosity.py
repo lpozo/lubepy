@@ -48,16 +48,16 @@ def viscosity_at_100(viscosity40, index):
     return round((viscosity * 100 + 0.01) / 100, 2)
 
 
-def viscosity_at_any_temp(self, viscosity40, viscosity100, temperature):
+def viscosity(viscosity40, viscosity100, temperature):
     """Calculate the kinematic viscosity at any temperature (ASTM D341)."""
 
     to_kelvin = 273.15
 
-    x = math.log10(math.log10(self._viscosity40 + 0.7))
-    y = math.log10(math.log10(self._viscosity100 + 0.7))
+    x = math.log10(math.log10(viscosity40 + 0.7))
+    y = math.log10(math.log10(viscosity100 + 0.7))
     t0 = math.log10(40 + to_kelvin)
     t1 = math.log10(100 + to_kelvin)
-    target_t = math.log10(self._temperature + to_kelvin)
+    target_t = math.log10(temperature + to_kelvin)
     b = (x - y) / (t1 - t0)
     a = x + b * t0
     v = 10 ** (10 ** (a - b * target_t)) - 0.7
@@ -107,9 +107,7 @@ def viscosity_index(viscosity40, viscosity100):
     N = --------------------------
                 log10(KV100)
     """
-    v_index = self._viscosity_index(viscosity40, viscosity100)
-    self._validate_viscosity_index(v_index)
-    return v_index
+    return _viscosity_index(viscosity40, viscosity100)
 
 
 def _viscosity_index(viscosity40, viscosity100):
