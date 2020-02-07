@@ -27,7 +27,7 @@ import math
 def viscosity_at_40(viscosity100: float, index: float) -> float:
     """Calculate the Kinematic Viscosity (KV) at 40°C.
 
-    Valid for viscosities under 2000 cSt.
+    Valid for viscosities under 2000 cSt at 40°C.
     """
     viscosity = viscosity100
     while _viscosity_index(viscosity, viscosity100) >= index and viscosity <= 2000:
@@ -36,14 +36,16 @@ def viscosity_at_40(viscosity100: float, index: float) -> float:
     return round((viscosity * 100 + 0.1) / 100, 2)
 
 
-def viscosity_at_100(viscosity40, v_index):
-    """Calculate the Kinematic Viscosity at 100°C."""
-    temp_v_index = self._v_index
-    n = 2.0
-    while temp_v_index <= self._v_index and n <= 500.0:
-        temp_v_index = self._viscosity_index(self._viscosity40, n)
-        n += 0.01
-    return round((n * 100 + 0.01) / 100, 2)
+def viscosity_at_100(viscosity40, index):
+    """Calculate the Kinematic Viscosity (KV) at 100°C.
+
+    Valid for viscosities between 2 and 500 cSt at 100°C.
+    """
+    viscosity = 2.0
+    while _viscosity_index(viscosity40, viscosity) <= index and viscosity <= 500.0:
+        viscosity += 0.01
+
+    return round((viscosity * 100 + 0.01) / 100, 2)
 
 
 def viscosity_at_any_temp(self, viscosity40, viscosity100, temperature):
