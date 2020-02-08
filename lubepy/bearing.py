@@ -22,6 +22,7 @@
 """This module provides Bearing Class."""
 
 import math
+from typing import Dict
 
 
 def grace_amount(outer_diameter: float, width: float) -> float:
@@ -29,7 +30,9 @@ def grace_amount(outer_diameter: float, width: float) -> float:
     return Bearing(outer_diameter, 0.0, width).grease_amount()
 
 
-def lubrication_frequency(inner_diameter: float, rpm: float, **factors: dict) -> float:
+def lubrication_frequency(
+    inner_diameter: float, rpm: float, **factors: Dict[str, int]
+) -> float:
     """Return the amount of grease (g) needed for re-lubrication."""
     bearing = Bearing(0.0, inner_diameter, 0.0)
     return bearing.lubrication_frequency(rpm, **factors)
@@ -44,7 +47,9 @@ def velocity_factor(outer_diameter: float, inner_diameter: float, rpm: float) ->
 class Bearing:
     """Class to define calculations related with bearings."""
 
-    def __init__(self, outer_diameter: float, inner_diameter: float, width: float):
+    def __init__(
+        self, outer_diameter: float, inner_diameter: float, width: float
+    ) -> None:
         """Class initializer."""
         self.outer_diameter = outer_diameter
         self.inner_diameter = inner_diameter
@@ -63,7 +68,7 @@ class Bearing:
 
         return round(unit_coefficient * self.outer_diameter * self.width, 2)
 
-    def lubrication_frequency(self, rpm: float, **factors: dict) -> float:
+    def lubrication_frequency(self, rpm: float, **factors: Dict[str, int]) -> float:
         """Calculate the re-lubrication frequency in hours.
 
                        14000000
@@ -106,7 +111,7 @@ class Bearing:
         d: Inner diameter of the bearing (mm)
         """
 
-        factors_map = {
+        correlation_factors = {
             "ft": (1.0, 0.5, 0.2, 0.1),
             "fc": (1.0, 0.7, 0.4, 0.2),
             "fh": (1.0, 0.7, 0.4, 0.1),
@@ -118,7 +123,7 @@ class Bearing:
         k_factor = 1
 
         for factor, score_index in factors.items():
-            k_factor *= factors_map[factor][int(score_index)]
+            k_factor *= correlation_factors[factor][score_index]
 
         frequency = k_factor * (
             (14000000 / (rpm * math.sqrt(self.inner_diameter)))
@@ -127,7 +132,7 @@ class Bearing:
 
         return round(frequency)
 
-    def velocity_factor(self, rpm):
+    def velocity_factor(self, rpm: float) -> float:
         """Calculate the velocity factor of a bearing.
 
         A = n * dm
