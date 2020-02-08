@@ -25,6 +25,7 @@
 from lubepy.reynolds import Reynolds
 from lubepy.reynolds import reynolds_number
 from lubepy.reynolds import flow_type
+from lubepy.reynolds import FlowType
 
 
 class TestReynolds:
@@ -40,7 +41,7 @@ class TestReynolds:
         assert reynolds_number(15.0, 0.10, 3) == 0.5
 
     def test_reynolds_flow_type(self):
-        assert self.reynolds.flow_type() == 'laminar'
+        assert self.reynolds.flow_type() == FlowType.LAMINAR
 
     def test_reynolds_flow_type_func(self):
-        assert flow_type(15.0, 0.10, 3) == 'laminar'
+        assert flow_type(15.0, 0.10, 3) == FlowType.LAMINAR
