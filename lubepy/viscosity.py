@@ -23,6 +23,11 @@
 
 import math
 
+LOW_VISCOSITY = 2.0
+HIGH_VISCOSITY_40 = 2000.0
+HIGH_VISCOSITY_100 = 500.0
+LOW_KELVIN = 273.15
+
 
 def viscosity_at_40(viscosity100: float, index: float) -> float:
     """Calculate the Kinematic Viscosity (KV) at 40°C.
@@ -30,7 +35,10 @@ def viscosity_at_40(viscosity100: float, index: float) -> float:
     Valid for viscosities under 2000 cSt at 40°C.
     """
     viscosity = viscosity100
-    while _viscosity_index(viscosity, viscosity100) >= index and viscosity <= 2000:
+    while (
+        _viscosity_index(viscosity, viscosity100) >= index
+        and viscosity <= HIGH_VISCOSITY_40
+    ):
         viscosity += 0.05
 
     return round((viscosity * 100 + 0.1) / 100, 2)
@@ -41,8 +49,11 @@ def viscosity_at_100(viscosity40, index):
 
     Valid for viscosities between 2 and 500 cSt at 100°C.
     """
-    viscosity = 2.0
-    while _viscosity_index(viscosity40, viscosity) <= index and viscosity <= 500.0:
+    viscosity = LOW_VISCOSITY
+    while (
+        _viscosity_index(viscosity40, viscosity) <= index
+        and viscosity <= HIGH_VISCOSITY_100
+    ):
         viscosity += 0.01
 
     return round((viscosity * 100 + 0.01) / 100, 2)
@@ -51,13 +62,11 @@ def viscosity_at_100(viscosity40, index):
 def viscosity(viscosity40, viscosity100, temperature):
     """Calculate the kinematic viscosity at any temperature (ASTM D341)."""
 
-    to_kelvin = 273.15
-
     x = math.log10(math.log10(viscosity40 + 0.7))
     y = math.log10(math.log10(viscosity100 + 0.7))
-    t0 = math.log10(40 + to_kelvin)
-    t1 = math.log10(100 + to_kelvin)
-    target_t = math.log10(temperature + to_kelvin)
+    t0 = math.log10(40 + LOW_KELVIN)
+    t1 = math.log10(100 + LOW_KELVIN)
+    target_t = math.log10(temperature + LOW_KELVIN)
     b = (x - y) / (t1 - t0)
     a = x + b * t0
     v = 10 ** (10 ** (a - b * target_t)) - 0.7
