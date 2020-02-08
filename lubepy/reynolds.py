@@ -19,13 +19,25 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
+"""This module provides Reynolds' number calculations."""
+
+from enum import Enum
+
+
+class FlowType(Enum):
+    """Enumeration to represent the flow type."""
+
+    LAMINAR: str = "laminar"
+    TURBULENT: str = "turbulent"
+    MIXED: str = "mixed"
+
 
 def reynolds_number(velocity: float, length: float, viscosity: float) -> float:
     """Calculate Reynolds number (Re)."""
     return Reynolds(velocity, length, viscosity).reynolds_number()
 
 
-def flow_type(velocity: float, length: float, viscosity: float) -> str:
+def flow_type(velocity: float, length: float, viscosity: float) -> FlowType:
     """Determine the flow type of a fluid."""
     return Reynolds(velocity, length, viscosity).flow_type()
 
@@ -33,7 +45,7 @@ def flow_type(velocity: float, length: float, viscosity: float) -> str:
 class Reynolds:
     """Class for calculations related to Reynolds number."""
 
-    def __init__(self, velocity: float, length: float, viscosity: float):
+    def __init__(self, velocity: float, length: float, viscosity: float) -> None:
         self.velocity = velocity
         self.length = length
         self.viscosity = viscosity
@@ -41,25 +53,25 @@ class Reynolds:
     def reynolds_number(self) -> float:
         """Calculate Reynolds number (Re).
 
-            V * Lc
-        Re = --------   [(m/s m) / m^2/s]
+              V * Lc
+        Re = --------  [(m/s m) / m^2/s]
                 v
         where:
-        V: velocity (m/s)
-        Lc: characteristic length (m)
-            For circular session Lc = D
-                D: diameter
-            For square session Lc = L
-                L: side
-                                        (2 * a * b)
-            For rectangular session Lc = -----------
-                                        (a + b)
-                a, b: sides
-        v: Kinematic Viscosity (m^2/s)
+            V: velocity (m/s)
+            Lc: characteristic length (m)
+                For circular session Lc = D
+                    D: diameter
+                For square session Lc = L
+                    L: side
+                                             (2 * a * b)
+                For rectangular session Lc = -----------
+                                               (a + b)
+                    a, b: sides
+            v: Kinematic Viscosity (m^2/s)
         """
         return round(self.velocity * self.length / self.viscosity, 1)
 
-    def flow_type(self) -> str:
+    def flow_type(self) -> FlowType:
         """Determine the flow type of a fluid.
 
         Re < 2000 => Laminar flow
@@ -68,8 +80,8 @@ class Reynolds:
         """
         reynolds = self.reynolds_number()
         if reynolds <= 2000.0:
-            return "laminar"
+            return FlowType.LAMINAR
         if reynolds >= 4000.0:
-            return "turbulent"
+            return FlowType.TURBULENT
 
-        return "mixed"
+        return FlowType.MIXED
