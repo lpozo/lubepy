@@ -23,6 +23,7 @@
 
 import math
 from typing import Dict
+from typing import Tuple
 
 
 def grace_amount(outer_diameter: float, width: float) -> float:
@@ -111,7 +112,7 @@ class Bearing:
         d: Inner diameter of the bearing (mm)
         """
 
-        correlation_factors = {
+        correlation_factors: Dict[str, Tuple[float, ...]] = {
             "ft": (1.0, 0.5, 0.2, 0.1),
             "fc": (1.0, 0.7, 0.4, 0.2),
             "fh": (1.0, 0.7, 0.4, 0.1),
