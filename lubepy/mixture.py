@@ -42,7 +42,7 @@ def mixture_proportions(
     second_viscosity: float,
     desired_viscosity: float,
     temperature: str,
-) -> tuple:
+):
     """Return proportions to get a mixture of a given viscosity."""
     return OilMixture(first_viscosity, second_viscosity,).mixture_proportions(
         desired_viscosity, temperature
@@ -52,15 +52,13 @@ def mixture_proportions(
 class OilMixture:
     """Class to provide calculations on oil mixtures."""
 
-    def __init__(
-        self, first_viscosity: float, second_viscosity: float,
-    ):
+    def __init__(self, first_viscosity: float, second_viscosity: float,) -> None:
         """Class initializer."""
         self.first_viscosity = first_viscosity
         self.second_viscosity = second_viscosity
         self.temp_map = {"100": 1.8, "40": 4.1, "-5": 1.9}
 
-    def mixture_viscosity(self, first_oil_percent, temperature: str) -> float:
+    def mixture_viscosity(self, first_oil_percent: float, temperature: str) -> float:
         """Return the resulting viscosity of a mix of two base oils.
 
         Mixture KV = e ^ (a * e ^ (x1 * log(b / a))) - K
@@ -80,7 +78,9 @@ class OilMixture:
 
         return round(mix_viscosity, 2)
 
-    def mixture_proportions(self, desired_viscosity: float, temperature: str) -> tuple:
+    Proportions = namedtuple("Proportions", ["first_oil_percent", "second_oil_percent"])
+
+    def mixture_proportions(self, desired_viscosity: float, temperature: str):
         """Return proportions to get a mixture of a given viscosity.
 
         first_oil_percent = 100 * (math.log(a / c) / math.log(b / c))
@@ -103,8 +103,5 @@ class OilMixture:
         c = math.log(self.second_viscosity + K)
         first_oil_percent = 100 * (math.log(a / c) / math.log(b / c))
         second_oil_percent = 100 - first_oil_percent
-        Proportions = namedtuple(
-            "Proportions", ["first_oil_percent", "second_oil_percent"]
-        )
 
-        return Proportions(round(first_oil_percent, 2), round(second_oil_percent, 2))
+        return self.Proportions(round(first_oil_percent, 2), round(second_oil_percent, 2))
