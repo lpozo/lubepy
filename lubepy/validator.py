@@ -21,135 +21,128 @@
 
 """This module provides Data Validator Class."""
 
-from .exception import *
+
+def validate_number(name, value):
+    """Validate input value as float."""
+    value = str(value).replace(",", ".").strip()
+    try:
+        value = float(value)
+    except ValueError:
+        if value == "":
+            value = "null"
+        raise ValueError(f"{name} must be a valid number, not: {value}")
+
+    if value in {float("inf"), float("-inf")}:
+        raise ValueError(f"{name} must be a valid number, not infinite")
+
+    return value
 
 
-class Validator:
-    """Data validation class."""
+# class Validator:
+#     """Data validation class."""
 
-    @staticmethod
-    def validate_float(name, value):
-        """Validate input value as float."""
-        value = str(value).replace(",", ".").strip()
-        try:
-            value = float(value)
-        except ValueError:
-            if value == "":
-                value = "null"
-            raise ValueError(
-                "{0}: Input value must be a valid number, "
-                "not: {1}".format(name, value)
-            )
-
-        if value in (float("inf"), float("-inf")):
-            raise ValueError(
-                "{0}: Input value must be a valid number, " "not: infinite".format(name)
-            )
-
-        return value
-
-    @staticmethod
-    def validate_lower_limit(name, value, limit=0, strict=False):
-        """Validate value is greater than a given value (limit)."""
-        if not strict:
-            if value < limit:
-                raise ConceptError(
-                    "{0}: Input value must be "
-                    "greater than or equal to {1}".format(name, limit)
-                )
-        else:
-            if value <= limit:
-                raise ConceptError(
-                    "{0}: Input value must be " "greater than {1}".format(name, limit)
-                )
+#     @staticmethod
+#     def validate_lower_limit(name, value, limit=0, strict=False):
+#         """Validate value is greater than a given value (limit)."""
+#         if not strict:
+#             if value < limit:
+#                 raise ConceptError(
+#                     "{0}: Input value must be "
+#                     "greater than or equal to {1}".format(name, limit)
+#                 )
+#         else:
+#             if value <= limit:
+#                 raise ConceptError(
+#                     "{0}: Input value must be " "greater than {1}".format(name, limit)
+#                 )
 
 
-def validate(obj, name, value, attr, limit=0, strict=False):
-    """Validate and set attributes of an object."""
-    validator = Validator()
-    value = validator.validate_float(name, value)
-    lower_limit = limit
-    validator.validate_lower_limit(name, value, lower_limit, strict)
-    setattr(obj, attr, value)
+# def validate(obj, name, value, attr, limit=0, strict=False):
+#     """Validate and set attributes of an object."""
+#     validator = Validator()
+#     value = validator.validate_float(name, value)
+#     lower_limit = limit
+#     validator.validate_lower_limit(name, value, lower_limit, strict)
+#     setattr(obj, attr, value)
 
 
-class Float:
-    """Descriptor for representing float values."""
+# class ValidNumber:
+#     """Descriptor for representing numerical values."""
 
-    def __get__(self, instance, owner):
-        return self._value
+#     def __get__(self, instance, owner):
+#         return self._value
 
-    def __set__(self, instance, value):
-        """Validate input value as float."""
-        value = str(value).replace(",", ".").strip()
-        try:
-            value = float(value)
-        except ValueError:
-            raise ValueError("Input value must be a valid float number")
+#     def __set__(self, instance, value):
+#         """Validate input value as float."""
+#         value = str(value).replace(",", ".").strip()
+#         try:
+#             value = float(value)
+#         except ValueError:
+#             raise ValueError("Input value must be a valid float number")
 
-        if value in (float("inf"), float("-inf")):
-            raise ValueError("Input value must be a valid float number")
+#         if value in (float("inf"), float("-inf")):
+#             raise ValueError("Input value must be a valid float number")
 
-        self._value = value
-
-
-class NonZeroPositiveFloat:
-    """Descriptor for representing non-zero positive values."""
-
-    def __get__(self, instance, owner):
-        return self._value
-
-    def __set__(self, instance, value):
-        """Validate input value as float."""
-        self.__value = value
-        if self.__value <= 0:
-            raise ValueError("Input value must be greater than 0")
-
-        self._value = self.__value
-
-    __value = Float()
+#         self._value = value
 
 
-class Viscosity:
-    """Descriptor for representing viscosity values."""
+# class NonZeroPositiveFloat:
+#     """Descriptor for representing non-zero positive values."""
 
-    def __get__(self, instance, owner):
-        return self._viscosity
+#     def __get__(self, instance, owner):
+#         return self._value
 
-    def __set__(self, instance, value):
-        self.__viscosity = value
-        if self.__viscosity < 2:
-            raise ConceptError("Viscosity must be greater or equal to 2")
+#     def __set__(self, instance, value):
+#         """Validate input value as float."""
+#         self.__value = value
+#         if self.__value <= 0:
+#             raise ValueError("Input value must be greater than 0")
 
-        self._viscosity = self.__viscosity
+#         self._value = self.__value
 
-    __viscosity = Float()
-
-
-class ViscosityIndex:
-    """Descriptor for representing viscosity index values."""
-
-    def __get__(self, instance, owner):
-        return self._index
-
-    def __set__(self, instance, value):
-        if value < 0.0 or value > 400.0:
-            raise ConceptError("Viscosity Index must be between 0 and 400")
-
-        self._index = value
+#     __value = Float()
 
 
-class Temperature:
-    """Descriptor for representing non-zero positive values."""
+# class Viscosity:
+#     """Descriptor for representing viscosity values."""
 
-    def __get__(self, instance, owner):
-        return self._temperature
+#     def __get__(self, instance, owner):
+#         return self._viscosity
 
-    def __set__(self, instance, value):
-        self.__temperature = value
-        if self.__temperature >= -50:
-            self._temperature = self.__temperature
-        else:
-            raise ConceptError("Temperature must be greater -50°C")
+#     def __set__(self, instance, value):
+#         self.__viscosity = value
+#         if self.__viscosity < 2:
+#             raise ConceptError("Viscosity must be greater or equal to 2")
 
-    __temperature = Float()
+#         self._viscosity = self.__viscosity
+
+#     __viscosity = Float()
+
+
+# class ViscosityIndex:
+#     """Descriptor for representing viscosity index values."""
+
+#     def __get__(self, instance, owner):
+#         return self._index
+
+#     def __set__(self, instance, value):
+#         if value < 0.0 or value > 400.0:
+#             raise ConceptError("Viscosity Index must be between 0 and 400")
+
+#         self._index = value
+
+
+# class Temperature:
+#     """Descriptor for representing non-zero positive values."""
+
+#     def __get__(self, instance, owner):
+#         return self._temperature
+
+#     def __set__(self, instance, value):
+#         self.__temperature = value
+#         if self.__temperature >= -50:
+#             self._temperature = self.__temperature
+#         else:
+#             raise ConceptError("Temperature must be greater -50°C")
+
+#     __temperature = Float()
