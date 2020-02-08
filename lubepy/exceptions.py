@@ -22,5 +22,13 @@
 """This module provides Exceptions."""
 
 
-class ConceptError(Exception):
+class ValidationError(Exception):
+    """Custom exception class to handle validation errors."""
+
+    ...
+
+
+class ConceptError(ValidationError):
     """Custom exception class to handle concept errors."""
+
+    ...
