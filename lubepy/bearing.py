@@ -22,8 +22,7 @@
 """This module provides Bearing Class."""
 
 import math
-from typing import Dict
-from typing import Tuple
+from typing import Dict, Tuple
 
 
 def grace_amount(outer_diameter: float, width: float) -> float:
