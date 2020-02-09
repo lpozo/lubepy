@@ -61,9 +61,9 @@ class Bearing:
 
         Gg = 0.005 * D * B
         where:
-        Gg: Amount of grease needed for re-lubrication (g)
-        D: Outer diameter of bearing (mm)
-        B: Total width of bearing (mm)
+            Gg: Amount of grease needed for re-lubrication (g)
+            D: Outer diameter of bearing (mm)
+            B: Total width of bearing (mm)
         """
         unit_coefficient = 0.005
 
@@ -137,13 +137,17 @@ class Bearing:
         """Calculate the velocity factor of a bearing.
 
         A = n * dm
+
         where:
-        A: Velocity factor (mm/min)
-        n: Rotation velocity (rpm)
-        dm: Mean diameter (mm)
-               (D + d)
-        dm = -----------
-                  2
+            A: Velocity factor (mm/min)
+            n: Rotation velocity (rpm)
+            dm: Mean diameter (mm)
+                   (D + d)
+            dm = -----------
+                      2
+            where:
+                D: outer diameter
+                d: inner diameter
         """
 
         return round(rpm * (self.outer_diameter + self.inner_diameter) / 2)
