@@ -21,21 +21,76 @@
 
 """This module provides Data Validator Class."""
 
+from lubepy import (
+    LOW_VISCOSITY,
+    HIGH_VISCOSITY_40,
+    HIGH_VISCOSITY_100,
+    LOW_INDEX,
+    HIGH_INDEX,
+)
 
-def validate_number(name, value):
-    """Validate input value as float."""
-    value = str(value).replace(",", ".").strip()
+from .exceptions import ConceptError, ValidationError
+
+
+def validate_number(name: str, value: str) -> float:
+    """Validate input and return it as float number."""
+    value = "".join(str(value).split()).replace(",", ".")
     try:
-        value = float(value)
+        result = float(value)
+        if result in {float("-inf"), float("inf")}:
+            raise ValueError
     except ValueError:
         if value == "":
             value = "null"
-        raise ValueError(f"{name} must be a valid number, not: {value}")
+        raise ValidationError(f"{name} must be a valid number, not: {value}")
 
-    if value in {float("inf"), float("-inf")}:
-        raise ValueError(f"{name} must be a valid number, not infinite")
+    return result
 
-    return value
+
+def validate_viscosity40(viscosity40):
+    return _validate_range("viscosity40", viscosity40, LOW_VISCOSITY, HIGH_VISCOSITY_40)
+
+
+def validate_viscosity100(viscosity100):
+    return _validate_range(
+        "viscosity100", viscosity100, LOW_VISCOSITY, HIGH_VISCOSITY_100
+    )
+
+
+def validate_viscosity_index(viscosity_index):
+    return _validate_range("viscosity_index", viscosity_index, LOW_INDEX, HIGH_INDEX)
+
+
+def _validate_range(name, value, lower, upper):
+    result = validate_number(name, value)
+    if not (lower <= result <= upper):
+        raise ConceptError(f"{name} must be between {lower} and {upper}")
+    return result
+
+
+class ValidNumber:
+    """Descriptor for representing numerical values."""
+
+    def __init__(self, name: str) -> None:
+        self._value: float
+        self._name = name
+
+    def __get__(self, instance, owner):
+        return self._value
+
+    def __set__(self, instance, value):
+        """Validate input value as float."""
+        self._value = validate_number(self._name, value)
+
+
+class NonZeroPositiveNumber(ValidNumber):
+    """Descriptor for representing non-zero positive numbers."""
+
+    def __set__(self, instance, value):
+        """Validate input value as float."""
+        self._value = validate_number(self._name, value)
+        if self._value <= 0:
+            raise ValidationError("Input value must be greater than 0")
 
 
 # class Validator:
@@ -64,73 +119,6 @@ def validate_number(name, value):
 #     lower_limit = limit
 #     validator.validate_lower_limit(name, value, lower_limit, strict)
 #     setattr(obj, attr, value)
-
-
-# class ValidNumber:
-#     """Descriptor for representing numerical values."""
-
-#     def __get__(self, instance, owner):
-#         return self._value
-
-#     def __set__(self, instance, value):
-#         """Validate input value as float."""
-#         value = str(value).replace(",", ".").strip()
-#         try:
-#             value = float(value)
-#         except ValueError:
-#             raise ValueError("Input value must be a valid float number")
-
-#         if value in (float("inf"), float("-inf")):
-#             raise ValueError("Input value must be a valid float number")
-
-#         self._value = value
-
-
-# class NonZeroPositiveFloat:
-#     """Descriptor for representing non-zero positive values."""
-
-#     def __get__(self, instance, owner):
-#         return self._value
-
-#     def __set__(self, instance, value):
-#         """Validate input value as float."""
-#         self.__value = value
-#         if self.__value <= 0:
-#             raise ValueError("Input value must be greater than 0")
-
-#         self._value = self.__value
-
-#     __value = Float()
-
-
-# class Viscosity:
-#     """Descriptor for representing viscosity values."""
-
-#     def __get__(self, instance, owner):
-#         return self._viscosity
-
-#     def __set__(self, instance, value):
-#         self.__viscosity = value
-#         if self.__viscosity < 2:
-#             raise ConceptError("Viscosity must be greater or equal to 2")
-
-#         self._viscosity = self.__viscosity
-
-#     __viscosity = Float()
-
-
-# class ViscosityIndex:
-#     """Descriptor for representing viscosity index values."""
-
-#     def __get__(self, instance, owner):
-#         return self._index
-
-#     def __set__(self, instance, value):
-#         if value < 0.0 or value > 400.0:
-#             raise ConceptError("Viscosity Index must be between 0 and 400")
-
-#         self._index = value
-
 
 # class Temperature:
 #     """Descriptor for representing non-zero positive values."""
