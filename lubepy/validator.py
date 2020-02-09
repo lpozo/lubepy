@@ -19,7 +19,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
-"""This module provides Data Validator Class."""
+"""This module provides validators."""
 
 from lubepy import (
     LOW_VISCOSITY,
