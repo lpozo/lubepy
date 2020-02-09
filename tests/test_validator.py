@@ -22,56 +22,130 @@
 
 """This module provides tests for validator.py."""
 
+import pytest
+from pytest import param
+
+from lubepy.exceptions import ValidationError, ConceptError
+from lubepy.validator import (
+    NonZeroPositiveNumber,
+    ValidNumber,
+    validate_number,
+    validate_viscosity40,
+    validate_viscosity100,
+    validate_viscosity_index,
+)
+
 
 class TestValidator:
     """Class to test Validator class."""
 
-    # @nose.tools.raises(ValueError)
-    # def test_float_non_valid_number(self):
-    #     self.valid_float = 'n'
+    @pytest.mark.parametrize(
+        "name, value",
+        [
+            param("number", ""),
+            param("number", "1.2-"),
+            param("number", "invalid.string"),
+            param("number", "inf"),
+            param("number", "-inf"),
+        ],
+    )
+    def test_validate_number(self, name, value):
+        with pytest.raises(ValidationError):
+            validate_number(name, value)
 
-    # def test_float_valid_number(self):
-    #     self.valid_float = '1,2'
-    #     assert self.valid_float == 1.2
+    @pytest.mark.parametrize(
+        "name, value, expected",
+        [
+            param("number", "1.2", 1.2),
+            param("number", "1,2", 1.2),
+            param("number", "-1.2", -1.2),
+            param("number", "- 1.2", -1.2),
+            param("number", "+1.2", 1.2),
+            param("number", "1 . 2 ", 1.2),
+        ],
+    )
+    def test_validate_number_value(self, name, value, expected):
+        assert validate_number(name, value) == expected
 
-    # @nose.tools.raises(ValueError)
-    # def test_positive_non_zero(self):
-    #     self.positive_non_zero = -15
+    @pytest.mark.parametrize(
+        "value, expected",
+        [
+            param("1.2", 1.2),
+            param("1,2", 1.2),
+            param("-1,2", -1.2),
+            param("- 1,2", -1.2),
+            param("1 . 2 ", 1.2),
+        ],
+    )
+    def test_valid_number_class(self, value, expected):
+        class MyClass:
+            number = ValidNumber("number")
 
-    # def test_validate_float(self):
-    #     assert self.validator.validate_float('Variable', 1.02) == 1.02
+        obj = MyClass()
+        obj.number = value
 
-    # def test_validate_float_string_float_input(self):
-    #     assert self.validator.validate_float('Variable', '1.02') == 1.02
+        assert obj.number == expected
 
-    # def test_validate_float_string_spaced_input(self):
-    #     assert self.validator.validate_float('Variable', ' 1.02   ') == 1.02
+    @pytest.mark.parametrize(
+        "value, expected", [param("1.2", 1.2), param("1,2", 1.2),],
+    )
+    def test_non_zero_positive_number_class(self, value, expected):
+        class MyClass:
+            number = NonZeroPositiveNumber("number")
 
-    # def test_validate_float_string_coma_input(self):
-    #     assert self.validator.validate_float('Variable', '1,02') == 1.02
+        obj = MyClass()
+        obj.number = value
 
-    # @nose.tools.raises(ValueError)
-    # def test_validate_float_inf_input(self):
-    #     self.validator.validate_float('Variable', 'inf')
+        assert obj.number == expected
 
-    # @nose.tools.raises(ValueError)
-    # def test_validate_float_negative_inf_input(self):
-    #     self.validator.validate_float('Variable', '-inf')
+    @pytest.mark.parametrize(
+        "value", [param("0"), param("-1.2")],
+    )
+    def test_non_zero_positive_number_class_with_invalid_input(self, value):
+        class MyClass:
+            number = NonZeroPositiveNumber("number")
 
-    # @nose.tools.raises(ValueError)
-    # def test_validate_float_empty_string_input(self):
-    #     self.validator.validate_float('Variable', '')
+        obj = MyClass()
 
-    # @nose.tools.raises(ValueError)
-    # def test_validate_float_string_input(self):
-    #     self.validator.validate_float('Variable', 'string')
+        with pytest.raises(ValidationError):
+            obj.number = value
 
-    # def test_validate_float_int_input(self):
-    #     assert self.validator.validate_float('Variable', 10) == 10.0
+    @pytest.mark.parametrize(
+        "viscosity40, expected", [param("68", 68.0), param("150", 150.0)],
+    )
+    def test_viscosity40(self, viscosity40, expected):
+        assert validate_viscosity40(viscosity40) == expected
 
-    # @nose.tools.raises(ConceptError)
-    # def test_validate_lower_limit(self):
-    #     self.validator.validate_lower_limit('Variable', 15, 16)
+    @pytest.mark.parametrize(
+        "viscosity40", [param("1"), param("2010")],
+    )
+    def test_viscosity40_wrong_value(self, viscosity40):
+        with pytest.raises(ConceptError):
+            validate_viscosity40(viscosity40)
 
-    # def test_validate_lower_limit_none(self):
-    #     assert self.validator.validate_lower_limit(15, 14) is None
+    @pytest.mark.parametrize(
+        "viscosity100, expected", [param("16.4", 16.4), param("15", 15.0)],
+    )
+    def test_viscosity100(self, viscosity100, expected):
+        assert validate_viscosity100(viscosity100) == expected
+
+    @pytest.mark.parametrize(
+        "viscosity100", [param("-1"), param("501")],
+    )
+    def test_viscosity100_wrong_value(self, viscosity100):
+        with pytest.raises(ConceptError):
+            validate_viscosity100(viscosity100)
+
+    @pytest.mark.parametrize(
+        "viscosity_index, expected",
+        [param("95", 95.0), param("150", 150.0), param("1", 1)],
+    )
+    def test_viscosity_index(self, viscosity_index, expected):
+        assert validate_viscosity_index(viscosity_index) == expected
+
+    @pytest.mark.parametrize(
+        "viscosity_index", [param("-1"), param("500"), param("400.1")],
+    )
+    def test_viscosity_index_wrong_value(self, viscosity_index):
+        with pytest.raises(ConceptError):
+            validate_viscosity_index(viscosity_index)
