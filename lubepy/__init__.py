@@ -30,3 +30,11 @@ AUTHOR = "Leodanis Pozo Ramos"
 REQUIRES_PYTHON = ">=3.8.1"
 VERSION = (0, 1, 0)
 __version__ = ".".join(map(str, VERSION))
+
+# Package constants
+LOW_VISCOSITY = 2.0
+HIGH_VISCOSITY_40 = 2000.0
+HIGH_VISCOSITY_100 = 500.0
+TO_KELVIN = 273.15
+LOW_INDEX = 1.0
+HIGH_INDEX = 400.0
