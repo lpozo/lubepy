@@ -21,8 +21,8 @@
 
 """This module provides OilMixture Class."""
 
-from collections import namedtuple
 import math
+from collections import namedtuple
 
 
 def mixture_viscosity(
