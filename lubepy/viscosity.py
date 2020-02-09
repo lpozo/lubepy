@@ -23,10 +23,7 @@
 
 import math
 
-LOW_VISCOSITY = 2.0
-HIGH_VISCOSITY_40 = 2000.0
-HIGH_VISCOSITY_100 = 500.0
-LOW_KELVIN = 273.15
+from . import HIGH_VISCOSITY_40, HIGH_VISCOSITY_100, LOW_VISCOSITY, TO_KELVIN
 
 
 def viscosity_at_40(viscosity100: float, index: float) -> float:
@@ -64,9 +61,9 @@ def viscosity(viscosity40, viscosity100, temperature):
 
     x = math.log10(math.log10(viscosity40 + 0.7))
     y = math.log10(math.log10(viscosity100 + 0.7))
-    t0 = math.log10(40 + LOW_KELVIN)
-    t1 = math.log10(100 + LOW_KELVIN)
-    target_t = math.log10(temperature + LOW_KELVIN)
+    t0 = math.log10(40 + TO_KELVIN)
+    t1 = math.log10(100 + TO_KELVIN)
+    target_t = math.log10(temperature + TO_KELVIN)
     b = (x - y) / (t1 - t0)
     a = x + b * t0
     v = 10 ** (10 ** (a - b * target_t)) - 0.7
