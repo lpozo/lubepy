@@ -27,8 +27,6 @@ from pytest import param
 
 from lubepy.exceptions import ValidationError, ConceptError
 from lubepy.validator import (
-    NonZeroPositiveNumber,
-    ValidNumber,
     validate_number,
     validate_viscosity40,
     validate_viscosity100,
@@ -66,49 +64,6 @@ class TestValidator:
     )
     def test_validate_number_value(self, name, value, expected):
         assert validate_number(name, value) == expected
-
-    @pytest.mark.parametrize(
-        "value, expected",
-        [
-            param("1.2", 1.2),
-            param("1,2", 1.2),
-            param("-1,2", -1.2),
-            param("- 1,2", -1.2),
-            param("1 . 2 ", 1.2),
-        ],
-    )
-    def test_valid_number_class(self, value, expected):
-        class MyClass:
-            number = ValidNumber("number")
-
-        obj = MyClass()
-        obj.number = value
-
-        assert obj.number == expected
-
-    @pytest.mark.parametrize(
-        "value, expected", [param("1.2", 1.2), param("1,2", 1.2),],
-    )
-    def test_non_zero_positive_number_class(self, value, expected):
-        class MyClass:
-            number = NonZeroPositiveNumber("number")
-
-        obj = MyClass()
-        obj.number = value
-
-        assert obj.number == expected
-
-    @pytest.mark.parametrize(
-        "value", [param("0"), param("-1.2")],
-    )
-    def test_non_zero_positive_number_class_with_invalid_input(self, value):
-        class MyClass:
-            number = NonZeroPositiveNumber("number")
-
-        obj = MyClass()
-
-        with pytest.raises(ValidationError):
-            obj.number = value
 
     @pytest.mark.parametrize(
         "viscosity40, expected", [param("68", 68.0), param("150", 150.0)],
