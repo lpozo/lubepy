@@ -27,6 +27,8 @@ from lubepy import (
     HIGH_VISCOSITY_100,
     LOW_INDEX,
     HIGH_INDEX,
+    LOW_TEMPERATURE,
+    HIGH_TEMPERATURE,
 )
 
 from .exceptions import ConceptError, ValidationError
@@ -61,76 +63,12 @@ def validate_viscosity_index(viscosity_index):
     return _validate_range("viscosity_index", viscosity_index, LOW_INDEX, HIGH_INDEX)
 
 
+def validate_temperature(temperature):
+    return _validate_range('temperature', temperature, LOW_TEMPERATURE, HIGH_TEMPERATURE)
+
+
 def _validate_range(name, value, lower, upper):
     result = validate_number(name, value)
     if not (lower <= result <= upper):
         raise ConceptError(f"{name} must be between {lower} and {upper}")
     return result
-
-
-class ValidNumber:
-    """Descriptor for representing numerical values."""
-
-    def __init__(self, name: str) -> None:
-        self._value: float
-        self._name = name
-
-    def __get__(self, instance, owner):
-        return self._value
-
-    def __set__(self, instance, value):
-        """Validate input value as float."""
-        self._value = validate_number(self._name, value)
-
-
-class NonZeroPositiveNumber(ValidNumber):
-    """Descriptor for representing non-zero positive numbers."""
-
-    def __set__(self, instance, value):
-        """Validate input value as float."""
-        self._value = validate_number(self._name, value)
-        if self._value <= 0:
-            raise ValidationError("Input value must be greater than 0")
-
-
-# class Validator:
-#     """Data validation class."""
-
-#     @staticmethod
-#     def validate_lower_limit(name, value, limit=0, strict=False):
-#         """Validate value is greater than a given value (limit)."""
-#         if not strict:
-#             if value < limit:
-#                 raise ConceptError(
-#                     "{0}: Input value must be "
-#                     "greater than or equal to {1}".format(name, limit)
-#                 )
-#         else:
-#             if value <= limit:
-#                 raise ConceptError(
-#                     "{0}: Input value must be " "greater than {1}".format(name, limit)
-#                 )
-
-
-# def validate(obj, name, value, attr, limit=0, strict=False):
-#     """Validate and set attributes of an object."""
-#     validator = Validator()
-#     value = validator.validate_float(name, value)
-#     lower_limit = limit
-#     validator.validate_lower_limit(name, value, lower_limit, strict)
-#     setattr(obj, attr, value)
-
-# class Temperature:
-#     """Descriptor for representing non-zero positive values."""
-
-#     def __get__(self, instance, owner):
-#         return self._temperature
-
-#     def __set__(self, instance, value):
-#         self.__temperature = value
-#         if self.__temperature >= -50:
-#             self._temperature = self.__temperature
-#         else:
-#             raise ConceptError("Temperature must be greater -50°C")
-
-#     __temperature = Float()
