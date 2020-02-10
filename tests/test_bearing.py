@@ -24,58 +24,51 @@
 
 import pytest
 
-from lubepy import bearing
+from lubepy.bearing import Bearing, grace_amount, lubrication_frequency, velocity_factor
+from lubepy.exceptions import ConceptError
 
 
 class TestBearing:
     """Class to test Bearing class."""
 
-    def setup_method(self):
-        self.bearing = bearing.Bearing(0.0, 0.0, 0.0)
+    def test_bearing_class(self):
+        with pytest.raises(ConceptError):
+            Bearing(20, 40, 1)
 
-    @pytest.mark.parametrize(
-        "outer_diameter, width, expected",
-        [(25, 60, 7.5)])
+    @pytest.mark.parametrize("outer_diameter, width, expected", [(25, 60, 7.5)])
     def test_grease_amount(self, outer_diameter, width, expected):
         """Test grease_amount()."""
-        self.bearing.outer_diameter = outer_diameter
-        self.bearing.width = width
-        assert self.bearing.grease_amount() == expected
+        bearing = Bearing(outer_diameter, outer_diameter / 2, width)
+        assert bearing.grease_amount() == expected
 
-    @pytest.mark.parametrize(
-        "outer_diameter, width, expected",
-        [(25, 60, 7.5)])
+    @pytest.mark.parametrize("outer_diameter, width, expected", [(25, 60, 7.5)])
     def test_grace_amount_func(self, outer_diameter, width, expected):
-        assert bearing.grace_amount(outer_diameter, width) == expected
+        assert grace_amount(outer_diameter, width) == expected
 
     def test_lubrication_frequency(self):
         """Test lubrication_frequency()."""
-        self.bearing.inner_diameter = 20
-        assert self.bearing.lubrication_frequency(rpm=1750.0,
-                                                  ft=0,
-                                                  fc=1,
-                                                  fh=2,
-                                                  fv=0,
-                                                  fp=0,
-                                                  fd=2) == 478
+        bearing = Bearing(40, 20, 1)
+        assert (
+            bearing.lubrication_frequency(
+                rpm=1750.0, ft=0, fc=1, fh=2, fv=0, fp=0, fd=2
+            )
+            == 478
+        )
 
     def test_lubrication_frequency_func(self):
         """Test lubrication_frequency()."""
-        assert bearing.lubrication_frequency(inner_diameter=20,
-                                             rpm=1750.0,
-                                             ft=0,
-                                             fc=1,
-                                             fh=2,
-                                             fv=0,
-                                             fp=0,
-                                             fd=2) == 478
+        assert (
+            lubrication_frequency(
+                inner_diameter=20, rpm=1750.0, ft=0, fc=1, fh=2, fv=0, fp=0, fd=2
+            )
+            == 478
+        )
 
     def test_velocity_factor(self):
         """Test speed_factor()."""
-        self.bearing.outer_diameter = 58
-        self.bearing.inner_diameter = 45
-        assert self.bearing.velocity_factor(3000) == 154500
+        bearing = Bearing(58, 45, 1)
+        assert bearing.velocity_factor(3000) == 154500
 
     def test_velocity_factor_func(self):
         """Test speed_factor()."""
-        assert bearing.velocity_factor(58, 45, 3000) == 154500
+        assert velocity_factor(58, 45, 3000) == 154500
