@@ -24,6 +24,8 @@
 import math
 from collections import namedtuple
 
+from .exceptions import ConceptError
+
 
 def mixture_viscosity(
     first_viscosity: float,
@@ -92,10 +94,13 @@ class OilMixture:
             c = math.log(KV2 + K)
         """
 
-        # if not(self.first_viscosity < desired_viscosity < self.second_viscosity or
-        #         self.second_viscosity < desired_viscosity < self.fi):
-        #     raise ViscosityIntervalError('Mixture viscosity must be inside '
-        #                                  'the viscosity interval')
+        if not (
+            self.first_viscosity <= desired_viscosity <= self.second_viscosity
+            or self.second_viscosity <= desired_viscosity <= self.first_viscosity
+        ):
+            raise ConceptError(
+                "Mixture viscosity must be inside the viscosity interval"
+            )
 
         K = self.temp_map[temperature]
         a = math.log(desired_viscosity + K)
@@ -104,4 +109,6 @@ class OilMixture:
         first_oil_percent = 100 * (math.log(a / c) / math.log(b / c))
         second_oil_percent = 100 - first_oil_percent
 
-        return self.Proportions(round(first_oil_percent, 2), round(second_oil_percent, 2))
+        return self.Proportions(
+            round(first_oil_percent, 2), round(second_oil_percent, 2)
+        )
