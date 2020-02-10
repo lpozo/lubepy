@@ -24,23 +24,25 @@
 import math
 from typing import Dict, Tuple
 
+from .exceptions import ConceptError
+
 
 def grace_amount(outer_diameter: float, width: float) -> float:
     """Return the amount of grease (g) needed for re-lubrication."""
-    return Bearing(outer_diameter, 0.0, width).grease_amount()
+    return Bearing(outer_diameter, outer_diameter / 2, width).grease_amount()
 
 
 def lubrication_frequency(
     inner_diameter: float, rpm: float, **factors: Dict[str, int]
 ) -> float:
     """Return the amount of grease (g) needed for re-lubrication."""
-    bearing = Bearing(0.0, inner_diameter, 0.0)
+    bearing = Bearing(inner_diameter * 2, inner_diameter, 1.0)
     return bearing.lubrication_frequency(rpm, **factors)
 
 
 def velocity_factor(outer_diameter: float, inner_diameter: float, rpm: float) -> float:
     """Calculate the velocity factor of a bearing."""
-    bearing = Bearing(outer_diameter, inner_diameter, 0.0)
+    bearing = Bearing(outer_diameter, inner_diameter, 1.0)
     return bearing.velocity_factor(rpm)
 
 
@@ -53,6 +55,8 @@ class Bearing:
         """Class initializer."""
         self.outer_diameter = outer_diameter
         self.inner_diameter = inner_diameter
+        if self.outer_diameter <= self.inner_diameter:
+            raise ConceptError('Outer diameter must be greater than inner diameter')
         self.width = width
 
     def grease_amount(self) -> float:
