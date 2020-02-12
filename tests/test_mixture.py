@@ -22,31 +22,38 @@
 
 """This module provides tests for mixture.py."""
 
-from lubepy.mixture import OilMixture
-from lubepy.mixture import mixture_viscosity
-from lubepy.mixture import mixture_proportions
+import pytest
+
+from lubepy.exceptions import ConceptError
+from lubepy.mixture import OilMixture, mixture_proportions, mixture_viscosity
 
 
 class TestOilMixture:
     """Class to test OilMixture class."""
 
-    def setup_method(self):
-        self.mixture = OilMixture(first_viscosity=20,
-                                  second_viscosity=16)
-
     def test_mixture_viscosity(self):
         """Test mixture viscosity (class API)."""
-        assert self.mixture.mixture_viscosity(45, '100') == 17.67
+        mixture = OilMixture(first_viscosity=20, second_viscosity=16)
+        assert mixture.mixture_viscosity(45, "100") == 17.67
 
     def test_mixture_viscosity_func(self):
         """Test mixture viscosity (func API)."""
-        assert mixture_viscosity(first_viscosity=20,
-                                 first_oil_percent=45,
-                                 second_viscosity=16,
-                                 temperature='100') == 17.67
+        assert (
+            mixture_viscosity(
+                first_viscosity=20,
+                first_oil_percent=45,
+                second_viscosity=16,
+                temperature="100",
+            )
+            == 17.67
+        )
 
     def test_mix_proportions(self):
-        assert OilMixture(680, 220).mixture_proportions(460, '40') == (67.32, 32.68)
+        assert OilMixture(680, 220).mixture_proportions(460, "40") == (67.32, 32.68)
+
+    def test_mix_proportions_wrong_interval(self):
+        with pytest.raises(ConceptError):
+            OilMixture(320, 220).mixture_proportions(460, "40")
 
     def test_mix_proportions_func(self):
-        assert mixture_proportions(680, 220, 460, '40') == (67.32, 32.68)
+        assert mixture_proportions(680, 220, 460, "40") == (67.32, 32.68)
