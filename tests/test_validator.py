@@ -31,6 +31,7 @@ from lubepy.validator import (
     validate_viscosity40,
     validate_viscosity100,
     validate_viscosity_index,
+    validate_temperature,
 )
 
 
@@ -104,3 +105,16 @@ class TestValidator:
     def test_viscosity_index_wrong_value(self, viscosity_index):
         with pytest.raises(ConceptError):
             validate_viscosity_index(viscosity_index)
+
+    @pytest.mark.parametrize(
+        "temp, expected", [param("-50", -50.0), param("100", 100.0), param("1200", 1200)],
+    )
+    def test_temperature(self, temp, expected):
+        assert validate_temperature(temp) == expected
+
+    @pytest.mark.parametrize(
+        "temp", [param("-51"), param("1201"), param("3000"), param("-60")],
+    )
+    def test_temperature_wrong_value(self, temp):
+        with pytest.raises(ConceptError):
+            validate_temperature(temp)
