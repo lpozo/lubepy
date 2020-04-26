@@ -20,9 +20,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
-# Note: To use the 'upload' functionality of this file, you must:
-#   $ pipenv install twine --dev
-
 from pathlib import Path
 from typing import List
 from typing import Dict
