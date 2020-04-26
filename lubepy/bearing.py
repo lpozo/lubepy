@@ -56,7 +56,7 @@ class Bearing:
         self.outer_diameter = outer_diameter
         self.inner_diameter = inner_diameter
         if self.outer_diameter <= self.inner_diameter:
-            raise ConceptError('Outer diameter must be greater than inner diameter')
+            raise ConceptError("Outer diameter must be greater than inner diameter")
         self.width = width
 
     def grease_amount(self) -> float:
