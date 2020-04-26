@@ -44,7 +44,7 @@ def validate_number(name: str, value: str) -> float:
     except ValueError:
         if value == "":
             value = "null"
-        raise ValidationError(f"{name} must be a valid number, not: {value}")
+        raise ValidationError(f"{name} must be a valid number, not: {value}") from None
 
     return result
 
