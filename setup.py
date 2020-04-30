@@ -78,4 +78,5 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
     ],
     keywords='machinery lubrication, oil, grease, lubrication engineering',
+    platforms=['linux', 'darwin'],
 )
