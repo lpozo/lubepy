@@ -21,21 +21,10 @@
 # MA 02110-1301, USA.
 
 from pathlib import Path
-from typing import List
 from typing import Dict
 
 from setuptools import find_packages
 from setuptools import setup
-
-# What packages are required for this module to be executed?
-REQUIRED: List[str] = [
-    # 'requests', 'maya', 'records',
-]
-
-# What packages are optional?
-EXTRAS: Dict[str, str] = {
-    # 'fancy feature': ['django'],
-}
 
 __here__ = Path().cwd()
 
@@ -64,8 +53,6 @@ setup(
     python_requires=__about__['REQUIRES_PYTHON'],
     url=__about__['URL'],
     packages=find_packages(exclude=["tests"]),
-    install_requires=REQUIRED,
-    extras_require=EXTRAS,
     include_package_data=True,
     license='GNU General Public License, Version 2, June 1991',
     classifiers=[
