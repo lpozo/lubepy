@@ -49,7 +49,10 @@ class TestOilMixture:
         )
 
     def test_mix_proportions(self):
-        assert OilMixture(680, 220).mixture_proportions(460, "40") == (67.32, 32.68)
+        assert OilMixture(680, 220).mixture_proportions(460, "40") == (
+            67.32,
+            32.68,
+        )
 
     def test_mix_proportions_wrong_interval(self):
         with pytest.raises(ConceptError):

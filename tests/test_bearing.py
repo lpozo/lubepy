@@ -24,7 +24,12 @@
 
 import pytest
 
-from lubepy.bearing import Bearing, grace_amount, lubrication_frequency, velocity_factor
+from lubepy.bearing import (
+    Bearing,
+    grace_amount,
+    lubrication_frequency,
+    velocity_factor,
+)
 from lubepy.exceptions import ConceptError
 
 
@@ -35,13 +40,17 @@ class TestBearing:
         with pytest.raises(ConceptError):
             Bearing(20, 40, 1)
 
-    @pytest.mark.parametrize("outer_diameter, width, expected", [(25, 60, 7.5)])
+    @pytest.mark.parametrize(
+        "outer_diameter, width, expected", [(25, 60, 7.5)]
+    )
     def test_grease_amount(self, outer_diameter, width, expected):
         """Test grease_amount()."""
         bearing = Bearing(outer_diameter, outer_diameter / 2, width)
         assert bearing.grease_amount() == expected
 
-    @pytest.mark.parametrize("outer_diameter, width, expected", [(25, 60, 7.5)])
+    @pytest.mark.parametrize(
+        "outer_diameter, width, expected", [(25, 60, 7.5)]
+    )
     def test_grace_amount_func(self, outer_diameter, width, expected):
         assert grace_amount(outer_diameter, width) == expected
 
@@ -59,7 +68,14 @@ class TestBearing:
         """Test lubrication_frequency()."""
         assert (
             lubrication_frequency(
-                inner_diameter=20, rpm=1750.0, ft=0, fc=1, fh=2, fv=0, fp=0, fd=2
+                inner_diameter=20,
+                rpm=1750.0,
+                ft=0,
+                fc=1,
+                fh=2,
+                fv=0,
+                fp=0,
+                fd=2,
             )
             == 478
         )

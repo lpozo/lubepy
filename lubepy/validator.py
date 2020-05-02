@@ -44,13 +44,17 @@ def validate_number(name: str, value: str) -> float:
     except ValueError:
         if value == "":
             value = "null"
-        raise ValidationError(f"{name} must be a valid number, not: {value}") from None
+        raise ValidationError(
+            f"{name} must be a valid number, not: {value}"
+        ) from None
 
     return result
 
 
 def validate_viscosity40(viscosity40):
-    return _validate_range("viscosity40", viscosity40, LOW_VISCOSITY, HIGH_VISCOSITY_40)
+    return _validate_range(
+        "viscosity40", viscosity40, LOW_VISCOSITY, HIGH_VISCOSITY_40
+    )
 
 
 def validate_viscosity100(viscosity100):
@@ -60,11 +64,15 @@ def validate_viscosity100(viscosity100):
 
 
 def validate_viscosity_index(viscosity_index):
-    return _validate_range("viscosity_index", viscosity_index, LOW_INDEX, HIGH_INDEX)
+    return _validate_range(
+        "viscosity_index", viscosity_index, LOW_INDEX, HIGH_INDEX
+    )
 
 
 def validate_temperature(temperature):
-    return _validate_range('temperature', temperature, LOW_TEMPERATURE, HIGH_TEMPERATURE)
+    return _validate_range(
+        "temperature", temperature, LOW_TEMPERATURE, HIGH_TEMPERATURE
+    )
 
 
 def _validate_range(name, value, lower, upper):
