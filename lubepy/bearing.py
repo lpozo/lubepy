@@ -40,7 +40,9 @@ def lubrication_frequency(
     return bearing.lubrication_frequency(rpm, **factors)
 
 
-def velocity_factor(outer_diameter: float, inner_diameter: float, rpm: float) -> float:
+def velocity_factor(
+    outer_diameter: float, inner_diameter: float, rpm: float
+) -> float:
     """Calculate the velocity factor of a bearing."""
     bearing = Bearing(outer_diameter, inner_diameter, 1.0)
     return bearing.velocity_factor(rpm)
@@ -56,7 +58,9 @@ class Bearing:
         self.outer_diameter = outer_diameter
         self.inner_diameter = inner_diameter
         if self.outer_diameter <= self.inner_diameter:
-            raise ConceptError("Outer diameter must be greater than inner diameter")
+            raise ConceptError(
+                "Outer diameter must be greater than inner diameter"
+            )
         self.width = width
 
     def grease_amount(self) -> float:
@@ -72,7 +76,9 @@ class Bearing:
 
         return round(unit_coefficient * self.outer_diameter * self.width, 2)
 
-    def lubrication_frequency(self, rpm: float, **factors: Dict[str, int]) -> float:
+    def lubrication_frequency(
+        self, rpm: float, **factors: Dict[str, int]
+    ) -> float:
         """Calculate the re-lubrication frequency in hours.
 
                        14000000

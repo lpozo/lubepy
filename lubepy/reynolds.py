@@ -45,7 +45,9 @@ def flow_type(velocity: float, length: float, viscosity: float) -> FlowType:
 class Reynolds:
     """Class for calculations related to Reynolds number."""
 
-    def __init__(self, velocity: float, length: float, viscosity: float) -> None:
+    def __init__(
+        self, velocity: float, length: float, viscosity: float
+    ) -> None:
         self.velocity = velocity
         self.length = length
         self.viscosity = viscosity

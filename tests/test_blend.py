@@ -45,7 +45,9 @@ class TestOilBlend:
     def test_additive_percent_mass_func(self):
         assert (
             additive_percent_mass(
-                additive_percent=8.0, additive_density=0.959, oil_density=0.881,
+                additive_percent=8.0,
+                additive_density=0.959,
+                oil_density=0.881,
             )
             == 8.71
         )
@@ -56,7 +58,9 @@ class TestOilBlend:
     def test_ash_per_metal_func(self):
         assert (
             ash_per_metal(
-                "Calcium", metal_content=dict(Calcium=0.47), additive_percent=8.0
+                "Calcium",
+                metal_content=dict(Calcium=0.47),
+                additive_percent=8.0,
             )
             == 0.128
         )

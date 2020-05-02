@@ -54,13 +54,17 @@ def mixture_proportions(
 class OilMixture:
     """Class to provide calculations on oil mixtures."""
 
-    def __init__(self, first_viscosity: float, second_viscosity: float,) -> None:
+    def __init__(
+        self, first_viscosity: float, second_viscosity: float,
+    ) -> None:
         """Class initializer."""
         self.first_viscosity = first_viscosity
         self.second_viscosity = second_viscosity
         self.temp_map = {"100": 1.8, "40": 4.1, "-5": 1.9}
 
-    def mixture_viscosity(self, first_oil_percent: float, temperature: str) -> float:
+    def mixture_viscosity(
+        self, first_oil_percent: float, temperature: str
+    ) -> float:
         """Return the resulting viscosity of a mix of two base oils.
 
         Mixture KV = e ^ (a * e ^ (x1 * log(b / a))) - K
@@ -80,7 +84,9 @@ class OilMixture:
 
         return round(mix_viscosity, 2)
 
-    Proportions = namedtuple("Proportions", ["first_oil_percent", "second_oil_percent"])
+    Proportions = namedtuple(
+        "Proportions", ["first_oil_percent", "second_oil_percent"]
+    )
 
     def mixture_proportions(self, desired_viscosity: float, temperature: str):
         """Return proportions to get a mixture of a given viscosity.
@@ -96,7 +102,9 @@ class OilMixture:
 
         if not (
             self.first_viscosity <= desired_viscosity <= self.second_viscosity
-            or self.second_viscosity <= desired_viscosity <= self.first_viscosity
+            or self.second_viscosity
+            <= desired_viscosity
+            <= self.first_viscosity
         ):
             raise ConceptError(
                 "Mixture viscosity must be inside the viscosity interval"

@@ -51,7 +51,9 @@ def ash_per_metal(
     metal: str, metal_content: Dict[str, float], additive_percent: float
 ) -> float:
     """Calculate the % of Sulfated Ash (SA) of a motor oil."""
-    return OilBlend(additive_percent, 0.0, 0.0, metal_content).ash_per_metal(metal)
+    return OilBlend(additive_percent, 0.0, 0.0, metal_content).ash_per_metal(
+        metal
+    )
 
 
 def total_ash(metal_content: dict, additive_percent: float) -> float:
@@ -92,7 +94,8 @@ class OilBlend:
                                        Density of Finished Oil (kg/L)
         """
         return round(
-            (self.additive_density * self.additive_percent) / self.oil_density, 2
+            (self.additive_density * self.additive_percent) / self.oil_density,
+            2,
         )
 
     def ash_per_metal(self, metal: str) -> float:
@@ -116,4 +119,6 @@ class OilBlend:
 
     def total_ash(self) -> float:
         """Calculate the total content of sulfated ash."""
-        return round(sum(self.ash_per_metal(metal) for metal in self.metal_content), 2)
+        return round(
+            sum(self.ash_per_metal(metal) for metal in self.metal_content), 2
+        )

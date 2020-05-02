@@ -20,6 +20,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
+"""This module provide setup.py script for distribution."""
+
 from pathlib import Path
 from typing import Dict
 
@@ -30,40 +32,40 @@ __here__ = Path().cwd()
 
 # Load the package's __init__.py module as a dictionary.
 __about__: Dict = {}
-with Path(__here__, 'lubepy', '__init__.py').open(encoding='UTF-8') as f:
+with Path(__here__, "lubepy", "__init__.py").open(encoding="UTF-8") as f:
     exec(f.read(), __about__)
 
 # Import the README and use it as the long-description.
 try:
-    with Path(__here__, 'README.md').open(encoding='utf-8') as f:
-        __long_description__ = '\n' + f.read()
+    with Path(__here__, "README.md").open(encoding="utf-8") as f:
+        __long_description__ = "\n" + f.read()
 except FileNotFoundError:
-    __long_description__ = __about__['DESCRIPTION']
+    __long_description__ = __about__["DESCRIPTION"]
 
 
 # Where the magic happens:
 setup(
-    name=__about__['NAME'],
-    version=__about__['__version__'],
-    description=__about__['DESCRIPTION'],
+    name=__about__["NAME"],
+    version=__about__["__version__"],
+    description=__about__["DESCRIPTION"],
     long_description=__long_description__,
-    long_description_content_type='text/markdown',
-    author=__about__['AUTHOR'],
-    author_email=__about__['EMAIL'],
-    python_requires=__about__['REQUIRES_PYTHON'],
-    url=__about__['URL'],
+    long_description_content_type="text/markdown",
+    author=__about__["AUTHOR"],
+    author_email=__about__["EMAIL"],
+    python_requires=__about__["REQUIRES_PYTHON"],
+    url=__about__["URL"],
     packages=find_packages(exclude=["tests"]),
     include_package_data=True,
-    license='GNU General Public License, Version 2, June 1991',
+    license="GNU General Public License, Version 2, June 1991",
     classifiers=[
-        'License :: OSI Approved :: GNU GPL v2',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: Implementation :: CPython',
+        "License :: OSI Approved :: GNU GPL v2",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: Implementation :: CPython",
     ],
-    keywords='machinery lubrication, oil, grease, lubrication engineering',
-    platforms=['linux', 'darwin'],
+    keywords="machinery lubrication, oil, grease, lubrication engineering",
+    platforms=["linux", "darwin"],
 )

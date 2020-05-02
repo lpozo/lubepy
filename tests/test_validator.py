@@ -107,7 +107,8 @@ class TestValidator:
             validate_viscosity_index(viscosity_index)
 
     @pytest.mark.parametrize(
-        "temp, expected", [param("-50", -50.0), param("100", 100.0), param("1200", 1200)],
+        "temp, expected",
+        [param("-50", -50.0), param("100", 100.0), param("1200", 1200)],
     )
     def test_temperature(self, temp, expected):
         assert validate_temperature(temp) == expected
