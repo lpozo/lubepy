@@ -39,12 +39,17 @@ def mixture_viscosity(
     )
 
 
+_Proportions = namedtuple(
+    "_Proportions", ["first_oil_percent", "second_oil_percent"]
+)
+
+
 def mixture_proportions(
     first_viscosity: float,
     second_viscosity: float,
     desired_viscosity: float,
     temperature: str,
-):
+) -> _Proportions:
     """Return proportions to get a mixture of a given viscosity."""
     return OilMixture(first_viscosity, second_viscosity,).mixture_proportions(
         desired_viscosity, temperature
@@ -84,11 +89,9 @@ class OilMixture:
 
         return round(mix_viscosity, 2)
 
-    Proportions = namedtuple(
-        "Proportions", ["first_oil_percent", "second_oil_percent"]
-    )
-
-    def mixture_proportions(self, desired_viscosity: float, temperature: str):
+    def mixture_proportions(
+        self, desired_viscosity: float, temperature: str
+    ) -> _Proportions:
         """Return proportions to get a mixture of a given viscosity.
 
         first_oil_percent = 100 * (math.log(a / c) / math.log(b / c))
@@ -117,6 +120,6 @@ class OilMixture:
         first_oil_percent = 100 * (math.log(a / c) / math.log(b / c))
         second_oil_percent = 100 - first_oil_percent
 
-        return self.Proportions(
+        return _Proportions(
             round(first_oil_percent, 2), round(second_oil_percent, 2)
         )
