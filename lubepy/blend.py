@@ -101,8 +101,8 @@ class OilBlend:
     def ash_per_metal(self, metal: str) -> float:
         """Calculate the % of Sulfated Ash (SA) of a motor oil.
 
-             Metal Content (% mass) * Ash Contribution * Additive Package (% volume)
-        SA = -----------------------------------------------------------------------
+             Metal Content (%mass) * Ash Contribution * Additive Pkg (%volume)
+        SA = -----------------------------------------------------------------
                                             100
 
         metal: Any of these: 'zinc', 'barium', 'sodium', 'calcium',

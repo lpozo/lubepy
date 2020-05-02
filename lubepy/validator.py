@@ -34,7 +34,7 @@ from lubepy import (
 from .exceptions import ConceptError, ValidationError
 
 
-def validate_number(name: str, value: str) -> float:
+def validate_number(name: str, value) -> float:
     """Validate input and return it as float number."""
     value = "".join(str(value).split()).replace(",", ".")
     try:
