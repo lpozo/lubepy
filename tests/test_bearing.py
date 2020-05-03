@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# File name: test_bearing.py
-#
-# Copyright (C) 2018 Leodanis Pozo Ramos <lpozor78@gmail.com>
+# Copyright (C) 2020 Leodanis Pozo Ramos <lpozor78@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -59,7 +57,7 @@ class TestBearing:
         bearing = Bearing(40, 20, 1)
         assert (
             bearing.lubrication_frequency(
-                rpm=1750.0, ft=0, fc=1, fh=2, fv=0, fp=0, fd=2
+                rpm=1750.0, factors=dict(ft=0, fc=1, fh=2, fv=0, fp=0, fd=2)
             )
             == 478
         )
@@ -70,12 +68,7 @@ class TestBearing:
             lubrication_frequency(
                 inner_diameter=20,
                 rpm=1750.0,
-                ft=0,
-                fc=1,
-                fh=2,
-                fv=0,
-                fp=0,
-                fd=2,
+                factors=dict(ft=0, fc=1, fh=2, fv=0, fp=0, fd=2),
             )
             == 478
         )

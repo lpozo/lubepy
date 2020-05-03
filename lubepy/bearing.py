@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# File name: bearing.py
-#
-# Copyright (C) 2018 Leodanis Pozo Ramos <lpozor78@gmail.com>
+# Copyright (C) 2020 Leodanis Pozo Ramos <lpozor78@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
-"""This module provides Bearing Class."""
+"""This module provides the Bearing class."""
 
 import math
 from typing import Dict, Tuple
@@ -33,11 +31,11 @@ def grace_amount(outer_diameter: float, width: float) -> float:
 
 
 def lubrication_frequency(
-    inner_diameter: float, rpm: float, **factors: Dict[str, int]
+    inner_diameter: float, rpm: float, factors: Dict[str, int]
 ) -> float:
     """Return the amount of grease (g) needed for re-lubrication."""
     bearing = Bearing(inner_diameter * 2, inner_diameter, 1.0)
-    return bearing.lubrication_frequency(rpm, **factors)
+    return bearing.lubrication_frequency(rpm, factors)
 
 
 def velocity_factor(
@@ -77,7 +75,7 @@ class Bearing:
         return round(unit_coefficient * self.outer_diameter * self.width, 2)
 
     def lubrication_frequency(
-        self, rpm: float, **factors: Dict[str, int]
+        self, rpm: float, factors: Dict[str, int]
     ) -> float:
         """Calculate the re-lubrication frequency in hours.
 

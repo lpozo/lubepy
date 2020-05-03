@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# File name: tests_mixture.py
-#
-# Copyright (C) 2018 Leodanis Pozo Ramos <lpozor78@gmail.com>
+# Copyright (C) 2020 Leodanis Pozo Ramos <lpozor78@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

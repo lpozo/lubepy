@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# File name: test_validator.py
-#
-# Copyright (C) 2018 Leodanis Pozo Ramos <lpozor78@gmail.com>
+# Copyright (C) 2020 Leodanis Pozo Ramos <lpozor78@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,9 +25,7 @@ from pytest import param
 
 from lubepy.exceptions import ValidationError, ConceptError
 from lubepy.validator import (
-    validate_number,
-    validate_viscosity40,
-    validate_viscosity100,
+    validate_viscosity,
     validate_viscosity_index,
     validate_temperature,
 )
@@ -39,58 +35,39 @@ class TestValidator:
     """Class to test Validator class."""
 
     @pytest.mark.parametrize(
-        "name, value",
-        [
-            param("number", ""),
-            param("number", "1.2-"),
-            param("number", "invalid.string"),
-            param("number", "inf"),
-            param("number", "-inf"),
-        ],
+        "viscosity40, temp, expected",
+        [param("68", "40", 68.0), param("150", "40", 150.0)],
     )
-    def test_validate_number(self, name, value):
+    def test_viscosity40(self, viscosity40, temp, expected):
+        assert validate_viscosity(viscosity40, temp) == expected
+
+    @pytest.mark.parametrize(
+        "viscosity40, temp", [param("1", "40"), param("2010", "40")],
+    )
+    def test_viscosity40_wrong_value(self, viscosity40, temp):
+        with pytest.raises(ConceptError):
+            validate_viscosity(viscosity40, temp)
+
+    @pytest.mark.parametrize(
+        "viscosity40, temp", [param("", "40"), param("", "40")],
+    )
+    def test_viscosity40_wrong_number(self, viscosity40, temp):
         with pytest.raises(ValidationError):
-            validate_number(name, value)
+            validate_viscosity(viscosity40, temp)
 
     @pytest.mark.parametrize(
-        "name, value, expected",
-        [
-            param("number", "1.2", 1.2),
-            param("number", "1,2", 1.2),
-            param("number", "-1.2", -1.2),
-            param("number", "- 1.2", -1.2),
-            param("number", "+1.2", 1.2),
-            param("number", "1 . 2 ", 1.2),
-        ],
+        "viscosity100, temp, expected",
+        [param("16.4", "100", 16.4), param("15", "100", 15.0)],
     )
-    def test_validate_number_value(self, name, value, expected):
-        assert validate_number(name, value) == expected
+    def test_viscosity100(self, viscosity100, temp, expected):
+        assert validate_viscosity(viscosity100, temp) == expected
 
     @pytest.mark.parametrize(
-        "viscosity40, expected", [param("68", 68.0), param("150", 150.0)],
+        "viscosity100, temp", [param("-1", "100"), param("501", "100")],
     )
-    def test_viscosity40(self, viscosity40, expected):
-        assert validate_viscosity40(viscosity40) == expected
-
-    @pytest.mark.parametrize(
-        "viscosity40", [param("1"), param("2010")],
-    )
-    def test_viscosity40_wrong_value(self, viscosity40):
+    def test_viscosity100_wrong_value(self, viscosity100, temp):
         with pytest.raises(ConceptError):
-            validate_viscosity40(viscosity40)
-
-    @pytest.mark.parametrize(
-        "viscosity100, expected", [param("16.4", 16.4), param("15", 15.0)],
-    )
-    def test_viscosity100(self, viscosity100, expected):
-        assert validate_viscosity100(viscosity100) == expected
-
-    @pytest.mark.parametrize(
-        "viscosity100", [param("-1"), param("501")],
-    )
-    def test_viscosity100_wrong_value(self, viscosity100):
-        with pytest.raises(ConceptError):
-            validate_viscosity100(viscosity100)
+            validate_viscosity(viscosity100, temp)
 
     @pytest.mark.parametrize(
         "viscosity_index, expected",
