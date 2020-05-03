@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# File name: setup.py
-#
-# Copyright (C) 2018 Leodanis Pozo Ramos <lpozor78@gmail.com>
+# Copyright (C) 2020 Leodanis Pozo Ramos <lpozor78@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +18,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
-"""This module provide setup.py script for distribution."""
+"""This module provides the setup.py script."""
 
 from pathlib import Path
 from typing import Dict
@@ -35,7 +33,7 @@ __about__: Dict = {}
 with Path(__here__, "lubepy", "__init__.py").open(encoding="UTF-8") as f:
     exec(f.read(), __about__)
 
-# Import the README and use it as the long-description.
+# Import the README.md and use it as the long-description.
 try:
     with Path(__here__, "README.md").open(encoding="utf-8") as f:
         __long_description__ = "\n" + f.read()
@@ -43,7 +41,6 @@ except FileNotFoundError:
     __long_description__ = __about__["DESCRIPTION"]
 
 
-# Where the magic happens:
 setup(
     name=__about__["NAME"],
     version=__about__["__version__"],

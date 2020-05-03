@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# File name: viscosity.py
-#
-# Copyright (C) 2018 Leodanis Pozo Ramos <lpozor78@gmail.com>
+# Copyright (C) 2020 Leodanis Pozo Ramos <lpozor78@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,11 +17,16 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
-"""This module provides Viscosity Class."""
+"""This module provides viscosity calculations."""
 
 import math
 
 from . import HIGH_VISCOSITY_40, HIGH_VISCOSITY_100, LOW_VISCOSITY, TO_KELVIN
+from .validator import (
+    validate_viscosity,
+    validate_viscosity_index,
+    validate_temperature,
+)
 
 
 def viscosity_at_40(viscosity100: float, index: float) -> float:
@@ -31,9 +34,10 @@ def viscosity_at_40(viscosity100: float, index: float) -> float:
 
     Valid for viscosities under 2000 cSt at 40°C.
     """
-    _viscosity = viscosity100
+    _viscosity = _viscosity100 = validate_viscosity(viscosity100, "100")
+    _index = validate_viscosity_index(index)
     while (
-        _viscosity_index(_viscosity, viscosity100) >= index
+        _viscosity_index(_viscosity, _viscosity100) >= _index
         and _viscosity <= HIGH_VISCOSITY_40
     ):
         _viscosity += 0.05
@@ -47,8 +51,10 @@ def viscosity_at_100(viscosity40: float, index: float) -> float:
     Valid for viscosities between 2 and 500 cSt at 100°C.
     """
     _viscosity = LOW_VISCOSITY
+    _viscosity40 = validate_viscosity(viscosity40, "40")
+    _index = validate_viscosity_index(index)
     while (
-        _viscosity_index(viscosity40, _viscosity) <= index
+        _viscosity_index(_viscosity40, _viscosity) <= _index
         and _viscosity <= HIGH_VISCOSITY_100
     ):
         _viscosity += 0.01
@@ -56,19 +62,23 @@ def viscosity_at_100(viscosity40: float, index: float) -> float:
     return round((_viscosity * 100 + 0.01) / 100, 2)
 
 
-def viscosity(
+def viscosity_at_any_temp(
     viscosity40: float, viscosity100: float, temperature: float
 ) -> float:
     """Calculate the kinematic viscosity at any temperature (ASTM D341)."""
+    _viscosity40 = validate_viscosity(viscosity40, "40")
+    _viscosity100 = validate_viscosity(viscosity100, "100")
+    _temperature = validate_temperature(temperature)
 
-    x = math.log10(math.log10(viscosity40 + 0.7))
-    y = math.log10(math.log10(viscosity100 + 0.7))
+    x = math.log10(math.log10(_viscosity40 + 0.7))
+    y = math.log10(math.log10(_viscosity100 + 0.7))
     t0 = math.log10(40 + TO_KELVIN)
     t1 = math.log10(100 + TO_KELVIN)
-    target_t = math.log10(temperature + TO_KELVIN)
+    target_t = math.log10(_temperature + TO_KELVIN)
     b = (x - y) / (t1 - t0)
     a = x + b * t0
     v = 10 ** (10 ** (a - b * target_t)) - 0.7
+
     return round(v, 2)
 
 
@@ -77,7 +87,7 @@ def viscosity_index(viscosity40: float, viscosity100: float) -> float:
 
     - Viscosity Index Up to and Including 100
 
-            (L - KV40)
+           (L - KV40)
     VI = ------------- * 100
             (L - H)
 
@@ -107,20 +117,21 @@ def viscosity_index(viscosity40: float, viscosity100: float) -> float:
 
             (10^N - 1)
     VI = --------------- + 100
-                0.00715
+             0.00715
 
     where:
 
-            log10(H) - log10(KV40)
+          log10(H) - log10(KV40)
     N = --------------------------
-                log10(KV100)
+              log10(KV100)
     """
     return _viscosity_index(viscosity40, viscosity100)
 
 
 def _viscosity_index(viscosity40: float, viscosity100: float) -> float:
     """Calculate the Viscosity Index (VI) by ASTM-D2270."""
-
+    _viscosity40 = validate_viscosity(viscosity40, "40")
+    _viscosity100 = validate_viscosity(viscosity100, "100")
     upper = float("inf")
     coefficients = {
         (2.0, 3.8): (1.14673, 1.7576, -0.109, 0.84155, 1.5521, -0.077),
@@ -144,17 +155,17 @@ def _viscosity_index(viscosity40: float, viscosity100: float) -> float:
     a, b, c, d, e, f = [0.0] * 6
 
     for k, v in coefficients.items():
-        if k[0] <= viscosity100 < k[1]:
+        if k[0] <= _viscosity100 < k[1]:
             a, b, c, d, e, f = v
             break
 
-    L = a * viscosity100 ** 2 + b * viscosity100 + c
+    L = a * _viscosity100 ** 2 + b * _viscosity100 + c
 
-    H = d * viscosity100 ** 2 + e * viscosity100 + f
+    H = d * _viscosity100 ** 2 + e * _viscosity100 + f
 
-    if viscosity40 >= H:
-        return round(((L - viscosity40) / (L - H)) * 100)
+    if _viscosity40 >= H:
+        return round(((L - _viscosity40) / (L - H)) * 100)
 
-    N = (math.log10(H) - math.log10(viscosity40)) / math.log10(viscosity100)
+    N = (math.log10(H) - math.log10(_viscosity40)) / math.log10(_viscosity100)
 
     return round(((10 ** N - 1) / 0.00715) + 100)

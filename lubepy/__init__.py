@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# File name: __init__.py
-#
-# Copyright (C) 2018 Leodanis Pozo Ramos <lpozor78@gmail.com>
+# Copyright (C) 2020 Leodanis Pozo Ramos <lpozor78@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,11 +17,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
-"""This module provides lubepy package."""
+"""This module provides the lubepy package."""
 
 # Package meta-data.
 NAME = "lubepy"
-DESCRIPTION = "lubepy provides basic set of machinery lubrication calculus."
+DESCRIPTION = (
+    "Lubepy provides basic set of machinery lubrication calculations."
+)
 URL = "https://github.com/lpozo/lubepy"
 EMAIL = "lpozor78@gmail.com"
 AUTHOR = "Leodanis Pozo Ramos"

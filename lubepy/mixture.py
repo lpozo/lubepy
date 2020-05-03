@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# File name: mixture.py
-#
-# Copyright (C) 2018 Leodanis Pozo Ramos <lpozor78@gmail.com>
+# Copyright (C) 2020 Leodanis Pozo Ramos <lpozor78@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
-"""This module provides OilMixture Class."""
+"""This module provides the OilMixture class."""
 
 import math
 from collections import namedtuple
