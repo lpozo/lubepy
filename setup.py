@@ -55,7 +55,7 @@ setup(
     include_package_data=True,
     license="GNU General Public License, Version 2, June 1991",
     classifiers=[
-        "License :: OSI Approved :: GNU GPL v2",
+        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
