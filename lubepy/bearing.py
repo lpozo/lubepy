@@ -142,7 +142,7 @@ class Bearing:
             "fd": (10.0, 5.0, 1.0),
         }
 
-        k_factor = 1
+        k_factor = 1.0
 
         for factor, score_index in factors.items():
             k_factor *= correlation_factors[factor][score_index]
