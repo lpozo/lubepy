@@ -22,19 +22,26 @@
 import math
 from typing import Dict, Tuple
 
+from . import MAX_BEARING_DIAMETER
+from . import MIN_BEARING_DIAMETER
+from . import MIN_BEARING_WIDTH
+from . import MIN_RPM
 from .exceptions import ConceptError
+from .validator import Diameter
+from .validator import Width
+from .validator import Rpm
 
 
 def grace_amount(outer_diameter: float, width: float) -> float:
     """Return the amount of grease (g) needed for re-lubrication."""
-    return Bearing(outer_diameter, outer_diameter / 2, width).grease_amount()
+    return Bearing(outer_diameter, MIN_BEARING_DIAMETER, width).grease_amount()
 
 
 def lubrication_frequency(
     inner_diameter: float, rpm: float, factors: Dict[str, int]
 ) -> float:
     """Return the amount of grease (g) needed for re-lubrication."""
-    bearing = Bearing(inner_diameter * 2, inner_diameter, 1.0)
+    bearing = Bearing(MAX_BEARING_DIAMETER, inner_diameter, MIN_BEARING_WIDTH)
     return bearing.lubrication_frequency(rpm, factors)
 
 
@@ -42,12 +49,17 @@ def velocity_factor(
     outer_diameter: float, inner_diameter: float, rpm: float
 ) -> float:
     """Calculate the velocity factor of a bearing."""
-    bearing = Bearing(outer_diameter, inner_diameter, 1.0)
+    bearing = Bearing(outer_diameter, inner_diameter, MIN_BEARING_WIDTH)
     return bearing.velocity_factor(rpm)
 
 
 class Bearing:
     """Class to define calculations related with bearings."""
+
+    outer_diameter = Diameter("Bearing outer diameter")
+    inner_diameter = Diameter("Bearing inner diameter")
+    width = Width("Bearing Width")
+    rpm = Rpm("Bearing rpm")
 
     def __init__(
         self, outer_diameter: float, inner_diameter: float, width: float
@@ -60,6 +72,7 @@ class Bearing:
                 "Outer diameter must be greater than inner diameter"
             )
         self.width = width
+        self.rpm = MIN_RPM
 
     def grease_amount(self) -> float:
         """Return the amount of grease (g) needed for re-lubrication.
@@ -118,6 +131,7 @@ class Bearing:
         n: Rotation velocity (rpm)
         d: Inner diameter of the bearing (mm)
         """
+        self.rpm = rpm
 
         correlation_factors: Dict[str, Tuple[float, ...]] = {
             "ft": (1.0, 0.5, 0.2, 0.1),
@@ -134,7 +148,7 @@ class Bearing:
             k_factor *= correlation_factors[factor][score_index]
 
         frequency = k_factor * (
-            (14000000 / (rpm * math.sqrt(self.inner_diameter)))
+            (14000000 / (self.rpm * math.sqrt(self.inner_diameter)))
             - 4 * self.inner_diameter
         )
 
@@ -156,5 +170,8 @@ class Bearing:
                 D: outer diameter
                 d: inner diameter
         """
+        self.rpm = rpm
 
-        return round(rpm * (self.outer_diameter + self.inner_diameter) / 2)
+        return round(
+            self.rpm * (self.outer_diameter + self.inner_diameter) / 2
+        )

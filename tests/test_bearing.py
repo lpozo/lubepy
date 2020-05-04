@@ -21,7 +21,9 @@
 """This module provides tests for bearing.py."""
 
 import pytest
+from pytest import param
 
+from lubepy import MIN_BEARING_DIAMETER
 from lubepy.bearing import (
     Bearing,
     grace_amount,
@@ -29,25 +31,51 @@ from lubepy.bearing import (
     velocity_factor,
 )
 from lubepy.exceptions import ConceptError
+from lubepy.exceptions import ValidationError
 
 
 class TestBearing:
     """Class to test Bearing class."""
 
-    def test_bearing_class(self):
+    @pytest.mark.parametrize(
+        "outer, inner, width",
+        [
+            param(20, 40, 1),
+            param(0, 40, 1),
+            param(60, 40, -5),
+            param(60, 0, 1),
+            param("0", "40", "1"),
+        ],
+    )
+    def test_bearing_class(self, outer, inner, width):
         with pytest.raises(ConceptError):
-            Bearing(20, 40, 1)
+            Bearing(outer, inner, width)
 
     @pytest.mark.parametrize(
-        "outer_diameter, width, expected", [(25, 60, 7.5)]
+        "outer, inner, width",
+        [
+            param("", 40, 1),
+            param(60, "", 1),
+            param(60, 40, ""),
+            param(60, 40, float("inf")),
+            param(60, float("nan"), 1),
+        ],
+    )
+    def test_bearing_class_wrong_number(self, outer, inner, width):
+        with pytest.raises(ValidationError):
+            Bearing(outer, inner, width)
+
+    @pytest.mark.parametrize(
+        "outer_diameter, width, expected",
+        [param(25, 60, 7.5), param("25", "60", 7.5)],
     )
     def test_grease_amount(self, outer_diameter, width, expected):
         """Test grease_amount()."""
-        bearing = Bearing(outer_diameter, outer_diameter / 2, width)
+        bearing = Bearing(outer_diameter, MIN_BEARING_DIAMETER, width)
         assert bearing.grease_amount() == expected
 
     @pytest.mark.parametrize(
-        "outer_diameter, width, expected", [(25, 60, 7.5)]
+        "outer_diameter, width, expected", [param(25, 60, 7.5)]
     )
     def test_grace_amount_func(self, outer_diameter, width, expected):
         assert grace_amount(outer_diameter, width) == expected
