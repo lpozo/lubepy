@@ -30,6 +30,12 @@ from lubepy import (
     HIGH_INDEX,
     LOW_TEMPERATURE,
     HIGH_TEMPERATURE,
+    MIN_BEARING_DIAMETER,
+    MAX_BEARING_DIAMETER,
+    MIN_BEARING_WIDTH,
+    MAX_BEARING_WIDTH,
+    MIN_RPM,
+    MAX_RPM,
 )
 
 from .exceptions import ConceptError, ValidationError
@@ -99,3 +105,37 @@ def _validate_param(
             f"{param} must be between {lower_limit} and {upper_limit}"
         )
     return result
+
+
+class BaseParam:
+    def __init__(self, name):
+        self._name = name
+        self._value = None
+
+    def __get__(self, instance, owner):
+        return self._value
+
+
+class Diameter(BaseParam):
+    """Descriptor class for validating Bearing diameters."""
+
+    def __set__(self, instance, value):
+        self._value = _validate_param(
+            self._name, value, MIN_BEARING_DIAMETER, MAX_BEARING_DIAMETER
+        )
+
+
+class Width(BaseParam):
+    """Descriptor class for validating Bearing widths."""
+
+    def __set__(self, instance, value):
+        self._value = _validate_param(
+            self._name, value, MIN_BEARING_WIDTH, MAX_BEARING_WIDTH
+        )
+
+
+class Rpm(BaseParam):
+    """Descriptor class for validating Bearing rpm."""
+
+    def __set__(self, instance, value):
+        self._value = _validate_param(self._name, value, MIN_RPM, MAX_RPM)
