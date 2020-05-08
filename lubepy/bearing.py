@@ -22,14 +22,14 @@
 import math
 from typing import Dict, Tuple
 
-from . import MAX_BEARING_DIAMETER
-from . import MIN_BEARING_DIAMETER
-from . import MIN_BEARING_WIDTH
-from . import MIN_RPM
+from . import (
+    MAX_BEARING_DIAMETER,
+    MIN_BEARING_DIAMETER,
+    MIN_BEARING_WIDTH,
+    MIN_RPM,
+)
 from .exceptions import ConceptError
-from .validator import Diameter
-from .validator import Width
-from .validator import Rpm
+from .validator import Diameter, Rpm, Width
 
 
 def grace_amount(outer_diameter: float, width: float) -> float:

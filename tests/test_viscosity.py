@@ -23,12 +23,13 @@
 import pytest
 from pytest import param
 
-from lubepy.exceptions import ConceptError
-from lubepy.exceptions import ValidationError
-from lubepy.viscosity import viscosity_at_40
-from lubepy.viscosity import viscosity_at_100
-from lubepy.viscosity import viscosity_at_any_temp
-from lubepy.viscosity import viscosity_index
+from lubepy.exceptions import ConceptError, ValidationError
+from lubepy.viscosity import (
+    viscosity_at_40,
+    viscosity_at_100,
+    viscosity_at_any_temp,
+    viscosity_index,
+)
 
 
 class TestViscosity:

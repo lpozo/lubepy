@@ -30,8 +30,7 @@ from lubepy.bearing import (
     lubrication_frequency,
     velocity_factor,
 )
-from lubepy.exceptions import ConceptError
-from lubepy.exceptions import ValidationError
+from lubepy.exceptions import ConceptError, ValidationError
 
 
 class TestBearing:

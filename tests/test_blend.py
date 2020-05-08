@@ -20,10 +20,12 @@
 
 """This module provides tests for blend.py."""
 
-from lubepy.blend import OilBlend
-from lubepy.blend import additive_percent_mass
-from lubepy.blend import ash_per_metal
-from lubepy.blend import total_ash
+from lubepy.blend import (
+    OilBlend,
+    additive_percent_mass,
+    ash_per_metal,
+    total_ash,
+)
 
 
 class TestOilBlend:
