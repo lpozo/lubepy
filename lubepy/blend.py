@@ -21,19 +21,8 @@
 
 from typing import Dict
 
-ASH_CONTRIB = {
-    "zinc": 1.50,
-    "barium": 1.70,
-    "sodium": 3.09,
-    "calcium": 3.40,
-    "magnesium": 4.95,
-    "lead": 1.464,
-    "boron": 3.22,
-    "potassium": 2.23,
-    "manganese": 1.291,
-    "molybdenum": 1.5,
-    "copper": 1.252,
-}
+from . import MIN_DENSITY, ASH_CONTRIBUTION
+from .validator import Density, AdditivePercent, MetalContent
 
 
 def additive_percent_mass(
@@ -45,24 +34,20 @@ def additive_percent_mass(
     ).additive_percent_mass()
 
 
-def ash_per_metal(
-    metal: str, metal_content: Dict[str, float], additive_percent: float
-) -> float:
-    """Calculate the % of Sulfated Ash (SA) of a motor oil."""
-    return OilBlend(additive_percent, 0.0, 0.0, metal_content).ash_per_metal(
-        metal
-    )
-
-
 def total_ash(metal_content: dict, additive_percent: float) -> float:
     """Calculate the total content of sulfated ash."""
-    return OilBlend(additive_percent, 0.0, 0.0, metal_content).total_ash()
+    return OilBlend(
+        additive_percent, MIN_DENSITY, MIN_DENSITY, metal_content
+    ).total_ash()
 
 
 class OilBlend:
     """Class to calculate some parameters of a motor oil blend."""
 
-    ash_contrib: dict = ASH_CONTRIB
+    additive_percent = AdditivePercent("Additive percent")
+    additive_density = Density("Additive density")
+    oil_density = Density("Oil density")
+    metal_content = MetalContent("Metal content")
 
     def __init__(
         self,
@@ -96,7 +81,7 @@ class OilBlend:
             2,
         )
 
-    def ash_per_metal(self, metal: str) -> float:
+    def _ash_per_metal(self, metal: str) -> float:
         """Calculate the % of Sulfated Ash (SA) of a motor oil.
 
              Metal Content (%mass) * Ash Contribution * Additive Pkg (%volume)
@@ -109,14 +94,37 @@ class OilBlend:
         """
         return round(
             self.metal_content[metal]
-            * self.ash_contrib[metal.lower()]
+            * ASH_CONTRIBUTION[metal.lower()]
             * self.additive_percent
             / 100,
             3,
         )
 
+    # def ash_per_metal(self, metal: str) -> float:
+    #     """Calculate the % of Sulfated Ash (SA) of a motor oil.
+    #
+    #          Metal Content (%mass) * Ash Contribution * Additive Pkg (%volume)
+    #     SA = -----------------------------------------------------------------
+    #                                         100
+    #
+    #     metal: Any of these: 'zinc', 'barium', 'sodium', 'calcium',
+    #            'magnesium', 'lead', 'boron', 'potassium',
+    #            'manganese', 'molybdenum', 'copper'
+    #     """
+    #     metal = metal.strip().lower()
+    #     if metal not in ASH_CONTRIBUTION:
+    #         raise ConceptError(f"{metal} is not a valid additive metal")
+    #
+    #     return round(
+    #         self.metal_content[metal]
+    #         * ASH_CONTRIBUTION[metal.lower()]
+    #         * self.additive_percent
+    #         / 100,
+    #         3,
+    #     )
+
     def total_ash(self) -> float:
         """Calculate the total content of sulfated ash."""
         return round(
-            sum(self.ash_per_metal(metal) for metal in self.metal_content), 2
+            sum(self._ash_per_metal(metal) for metal in self.metal_content), 2
         )

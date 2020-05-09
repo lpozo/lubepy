@@ -20,10 +20,14 @@
 
 """This module provides tests for blend.py."""
 
+import pytest
+from pytest import param
+
+from lubepy.exceptions import ConceptError, ValidationError
+
 from lubepy.blend import (
     OilBlend,
     additive_percent_mass,
-    ash_per_metal,
     total_ash,
 )
 
@@ -31,16 +35,48 @@ from lubepy.blend import (
 class TestOilBlend:
     """Class to test OilBlend."""
 
-    def setup_method(self):
-        self.blend = OilBlend(
+    @pytest.mark.parametrize(
+        "additive_percent, additive_density, oil_density, metal_content",
+        [
+            param(45.0, 0.95, 0.88, dict(Calcium=0.47, Magnesium=1.15)),
+            param(0.3, 1.0, 0.88, dict(Calcium=0.47, Magnesium=1.15)),
+            param(0.3, 0.9, 2, dict(Calcium=0.47, Magnesium=1.15)),
+            param(0.3, 0.9, 0.88, dict(Iron=0.47)),
+        ],
+    )
+    def test_oil_blend_concept_error(
+        self, additive_percent, additive_density, oil_density, metal_content
+    ):
+        with pytest.raises(ConceptError):
+            OilBlend(
+                additive_percent, additive_density, oil_density, metal_content
+            )
+
+    @pytest.mark.parametrize(
+        "additive_percent, additive_density, oil_density, metal_content",
+        [
+            param(float("nan"), 0.95, 0.88, dict(Calcium=0.47)),
+            param(5.0, "one", 0.88, dict(Calcium=0.47, Magnesium=1.15)),
+            param(5.0, ".95", None, dict(Calcium=0.47, Magnesium=1.15)),
+            param(5.0, ".95", 0.88, dict(Calcium=float("nan"))),
+        ],
+    )
+    def test_oil_blend_validation_error(
+        self, additive_percent, additive_density, oil_density, metal_content
+    ):
+        with pytest.raises(ValidationError):
+            OilBlend(
+                additive_percent, additive_density, oil_density, metal_content
+            )
+
+    def test_additive_percent_mass(self):
+        blend = OilBlend(
             additive_percent=8.0,
             additive_density=0.959,
             oil_density=0.881,
             metal_content=dict(Calcium=0.47, Magnesium=1.15, Zinc=1.66),
         )
-
-    def test_additive_percent_mass(self):
-        assert self.blend.additive_percent_mass() == 8.71
+        assert blend.additive_percent_mass() == 8.71
 
     def test_additive_percent_mass_func(self):
         assert (
@@ -52,21 +88,13 @@ class TestOilBlend:
             == 8.71
         )
 
-    def test_ash_per_metal(self):
-        assert self.blend.ash_per_metal("Calcium") == 0.128
-
-    def test_ash_per_metal_func(self):
-        assert (
-            ash_per_metal(
-                "Calcium",
-                metal_content=dict(Calcium=0.47),
-                additive_percent=8.0,
-            )
-            == 0.128
-        )
-
     def test_total_ash(self):
-        self.blend.additive_percent = 8.5
+        self.blend = OilBlend(
+            additive_percent=8.5,
+            additive_density=0.959,
+            oil_density=0.881,
+            metal_content=dict(Calcium=0.47, Magnesium=1.15, Zinc=1.66),
+        )
         assert self.blend.total_ash() == 0.83
 
     def test_total_ash_func(self):

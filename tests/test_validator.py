@@ -32,7 +32,7 @@ from lubepy.validator import (
 
 
 class TestValidator:
-    """Class to test Validator class."""
+    """Class to test validation."""
 
     @pytest.mark.parametrize(
         "viscosity40, temp, expected",

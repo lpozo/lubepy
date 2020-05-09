@@ -35,7 +35,7 @@ def reynolds_number(velocity: float, length: float, viscosity: float) -> float:
     return Reynolds(velocity, length, viscosity).reynolds_number()
 
 
-def flow_type(velocity: float, length: float, viscosity: float) -> FlowType:
+def flow_type(velocity: float, length: float, viscosity: float) -> str:
     """Determine the flow type of a fluid."""
     return Reynolds(velocity, length, viscosity).flow_type()
 

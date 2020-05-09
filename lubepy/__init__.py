@@ -29,7 +29,7 @@ EMAIL = "lpozor78@gmail.com"
 AUTHOR = "Leodanis Pozo Ramos"
 REQUIRES_PYTHON = ">3"
 VERSION = (0, 1, 0)
-__version__ = ".".join(map(str, VERSION))
+__version__ = ".".join(str(item) for item in VERSION)
 
 # Package constants
 LOW_VISCOSITY = 2.0
@@ -46,3 +46,20 @@ MIN_BEARING_WIDTH = 1.0
 MAX_BEARING_WIDTH = 10_000.0
 MIN_RPM = 0.0
 MAX_RPM = 100_000.0
+MIN_ADDITIVE_PERCENT = 0.0
+MAX_ADDITIVE_PERCENT = 40.0
+MIN_DENSITY = 0.7
+MAX_DENSITY = 0.99
+ASH_CONTRIBUTION = {
+    "zinc": 1.50,
+    "barium": 1.70,
+    "sodium": 3.09,
+    "calcium": 3.40,
+    "magnesium": 4.95,
+    "lead": 1.464,
+    "boron": 3.22,
+    "potassium": 2.23,
+    "manganese": 1.291,
+    "molybdenum": 1.5,
+    "copper": 1.252,
+}

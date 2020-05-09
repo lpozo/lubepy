@@ -20,7 +20,6 @@
 """This module provides validators for input parameters."""
 
 from math import isinf, isnan
-from typing import Literal
 
 from lubepy import (
     LOW_VISCOSITY,
@@ -36,81 +35,94 @@ from lubepy import (
     MAX_BEARING_WIDTH,
     MIN_RPM,
     MAX_RPM,
+    MIN_DENSITY,
+    MAX_DENSITY,
+    MIN_ADDITIVE_PERCENT,
+    MAX_ADDITIVE_PERCENT,
+    ASH_CONTRIBUTION,
 )
 
 from .exceptions import ConceptError, ValidationError
 
 
-def validate_viscosity(value, temperature: Literal["40", "100"]) -> float:
+def validate_viscosity(value, temperature: str) -> float:
     upper_limit = {"40": HIGH_VISCOSITY_40, "100": HIGH_VISCOSITY_100}
-    viscosity = _validate_param(
+    validate = ParamValidator()
+    return validate(
         param=f"Viscosity at {temperature}",
         value=value,
-        lower_limit=LOW_VISCOSITY,
-        upper_limit=upper_limit[temperature],
+        lower=LOW_VISCOSITY,
+        upper=upper_limit[temperature],
     )
-    return viscosity
 
 
 def validate_viscosity_index(value) -> float:
-    viscosity_index = _validate_param(
+    validate = ParamValidator()
+    return validate(
         param="Viscosity Index",
         value=value,
-        lower_limit=LOW_INDEX,
-        upper_limit=HIGH_INDEX,
+        lower=LOW_INDEX,
+        upper=HIGH_INDEX,
     )
-    return viscosity_index
 
 
 def validate_temperature(value) -> float:
-    temperature = _validate_param(
+    validate = ParamValidator()
+    return validate(
         param="Temperature",
         value=value,
-        lower_limit=LOW_TEMPERATURE,
-        upper_limit=HIGH_TEMPERATURE,
+        lower=LOW_TEMPERATURE,
+        upper=HIGH_TEMPERATURE,
     )
-    return temperature
 
 
-def _validate_number(name: str, value) -> float:
-    """Validate input and return it as float number."""
-    value = "".join(str(value).split()).replace(",", ".")
+class ParamValidator:
+    """Validate params."""
 
-    if value == "":
-        value = "null"
+    def __init__(self):
+        self._param = None
+        self._value = None
 
-    error_msg = f"{name} must be a valid number, not: {value}"
+    def __call__(self, param, value, lower=None, upper=None):
+        self._param = param
+        self._value = value
+        self._cleanup()
+        self._to_float()
+        self._check_symbols()
+        self._check_range(lower, upper)
+        return self._value
 
-    try:
-        result = float(value)
-    except ValueError:
-        raise ValidationError(error_msg) from None
+    def _cleanup(self):
+        self._value = "".join(str(self._value).split()).replace(",", ".")
 
-    if isinf(result) or isnan(result):
-        raise ValidationError(error_msg)
+    def _to_float(self):
+        try:
+            self._value = float(self._value)
+        except ValueError:
+            raise ValidationError(self._error_msg) from None
 
-    return result
+    def _check_symbols(self):
+        if isinf(self._value) or isnan(self._value):
+            raise ValidationError(self._error_msg)
 
+    def _check_range(self, lower: float = None, upper: float = None):
+        if lower is None and upper is None:
+            return None
+        if not lower <= self._value <= upper:
+            raise ConceptError(
+                f"{self._param} must be between {lower} and {upper}"
+            )
 
-def _in_range(value: float, lower: float, upper: float):
-    return lower <= value <= upper
-
-
-def _validate_param(
-    param: str, value, lower_limit: float, upper_limit: float
-) -> float:
-    result = _validate_number(param, value)
-    if not _in_range(result, lower_limit, upper_limit):
-        raise ConceptError(
-            f"{param} must be between {lower_limit} and {upper_limit}"
-        )
-    return result
+    @property
+    def _error_msg(self):
+        return f"{self._param} must be a valid number, not: {self._value}"
 
 
 class BaseParam:
     def __init__(self, name):
         self._name = name
         self._value = None
+        self._validate = ParamValidator()
 
     def __get__(self, instance, owner):
         return self._value
@@ -120,7 +132,7 @@ class Diameter(BaseParam):
     """Descriptor class for validating Bearing diameters."""
 
     def __set__(self, instance, value):
-        self._value = _validate_param(
+        self._value = self._validate(
             self._name, value, MIN_BEARING_DIAMETER, MAX_BEARING_DIAMETER
         )
 
@@ -129,7 +141,7 @@ class Width(BaseParam):
     """Descriptor class for validating Bearing widths."""
 
     def __set__(self, instance, value):
-        self._value = _validate_param(
+        self._value = self._validate(
             self._name, value, MIN_BEARING_WIDTH, MAX_BEARING_WIDTH
         )
 
@@ -138,4 +150,41 @@ class Rpm(BaseParam):
     """Descriptor class for validating Bearing rpm."""
 
     def __set__(self, instance, value):
-        self._value = _validate_param(self._name, value, MIN_RPM, MAX_RPM)
+        self._value = self._validate(self._name, value, MIN_RPM, MAX_RPM)
+
+
+class Density(BaseParam):
+    """Descriptor class for validating density."""
+
+    def __set__(self, instance, value):
+        self._value = self._validate(
+            self._name, value, MIN_DENSITY, MAX_DENSITY
+        )
+
+
+class AdditivePercent(BaseParam):
+    """Descriptor class for validating additive percent."""
+
+    def __set__(self, instance, value):
+        self._value = self._validate(
+            self._name, value, MIN_ADDITIVE_PERCENT, MAX_ADDITIVE_PERCENT
+        )
+
+
+class MetalContent(BaseParam):
+    """Descriptor class for validating metal content dict."""
+
+    def __set__(self, instance, value):
+        if isinstance(value, dict):
+            self._value = {
+                k.strip().lower(): self._validate(f"{self._name} for {k}", v)
+                for k, v in value.items()
+            }
+        else:
+            raise ConceptError(
+                f"{self._name} must be a dictionary object not {type(value)}"
+            )
+
+        for metal in self._value:
+            if metal not in ASH_CONTRIBUTION:
+                raise ConceptError(f"{metal} is not a valid additive metal")
