@@ -25,7 +25,7 @@ from pytest import param
 
 from lubepy.exceptions import ConceptError, ValidationError
 
-from lubepy.blend import (
+from lubepy.lube.blend import (
     OilBlend,
     additive_percent_mass,
     total_ash,
@@ -38,8 +38,8 @@ class TestOilBlend:
     @pytest.mark.parametrize(
         "additive_percent, additive_density, oil_density, metal_content",
         [
-            param(45.0, 0.95, 0.88, dict(Calcium=0.47, Magnesium=1.15)),
-            param(0.3, 1.0, 0.88, dict(Calcium=0.47, Magnesium=1.15)),
+            param(55.0, 0.95, 0.88, dict(Calcium=0.47, Magnesium=1.15)),
+            param(0.3, 1.7, 0.88, dict(Calcium=0.47, Magnesium=1.15)),
             param(0.3, 0.9, 2, dict(Calcium=0.47, Magnesium=1.15)),
             param(0.3, 0.9, 0.88, dict(Iron=0.47)),
         ],

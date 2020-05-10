@@ -22,13 +22,13 @@
 from math import isinf, isnan
 
 from lubepy import (
-    LOW_VISCOSITY,
-    HIGH_VISCOSITY_40,
-    HIGH_VISCOSITY_100,
-    LOW_INDEX,
-    HIGH_INDEX,
-    LOW_TEMPERATURE,
-    HIGH_TEMPERATURE,
+    MIN_VISCOSITY,
+    MAX_VISCOSITY_40,
+    MAX_VISCOSITY_100,
+    MIN_VISCOSITY_INDEX,
+    MAX_VISCOSITY_INDEX,
+    MIN_TEMPERATURE,
+    MAX_TEMPERATURE,
     MIN_BEARING_DIAMETER,
     MAX_BEARING_DIAMETER,
     MIN_BEARING_WIDTH,
@@ -42,16 +42,16 @@ from lubepy import (
     ASH_CONTRIBUTION,
 )
 
-from .exceptions import ConceptError, ValidationError
+from lubepy.exceptions import ConceptError, ValidationError
 
 
 def validate_viscosity(value, temperature: str) -> float:
-    upper_limit = {"40": HIGH_VISCOSITY_40, "100": HIGH_VISCOSITY_100}
+    upper_limit = {"40": MAX_VISCOSITY_40, "100": MAX_VISCOSITY_100}
     validate = ParamValidator()
     return validate(
         param=f"Viscosity at {temperature}",
         value=value,
-        lower=LOW_VISCOSITY,
+        lower=MIN_VISCOSITY,
         upper=upper_limit[temperature],
     )
 
@@ -61,8 +61,8 @@ def validate_viscosity_index(value) -> float:
     return validate(
         param="Viscosity Index",
         value=value,
-        lower=LOW_INDEX,
-        upper=HIGH_INDEX,
+        lower=MIN_VISCOSITY_INDEX,
+        upper=MAX_VISCOSITY_INDEX,
     )
 
 
@@ -71,8 +71,8 @@ def validate_temperature(value) -> float:
     return validate(
         param="Temperature",
         value=value,
-        lower=LOW_TEMPERATURE,
-        upper=HIGH_TEMPERATURE,
+        lower=MIN_TEMPERATURE,
+        upper=MAX_TEMPERATURE,
     )
 
 

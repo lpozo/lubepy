@@ -22,14 +22,14 @@
 import math
 from typing import Dict, Tuple
 
-from . import (
+from lubepy import (
     MAX_BEARING_DIAMETER,
     MIN_BEARING_DIAMETER,
     MIN_BEARING_WIDTH,
     MIN_RPM,
 )
-from .exceptions import ConceptError
-from .validator import Diameter, Rpm, Width
+from lubepy.exceptions import ConceptError
+from lubepy.validator.core import Diameter, Rpm, Width
 
 
 def grace_amount(outer_diameter: float, width: float) -> float:

@@ -22,7 +22,7 @@
 import math
 from collections import namedtuple
 
-from .exceptions import ConceptError
+from lubepy.exceptions import ConceptError
 
 
 def mixture_viscosity(

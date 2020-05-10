@@ -22,7 +22,7 @@
 # Package meta-data.
 NAME = "lubepy"
 DESCRIPTION = (
-    "Lubepy provides basic set of machinery lubrication calculations."
+    "Lubepy provides a basic set of machinery lubrication calculations."
 )
 URL = "https://github.com/lpozo/lubepy"
 EMAIL = "lpozor78@gmail.com"
@@ -32,24 +32,23 @@ VERSION = (0, 1, 0)
 __version__ = ".".join(str(item) for item in VERSION)
 
 # Package constants
-LOW_VISCOSITY = 2.0
-HIGH_VISCOSITY_40 = 2000.0
-HIGH_VISCOSITY_100 = 500.0
-TO_KELVIN = 273.15
-LOW_INDEX = 1.0
-HIGH_INDEX = 400.0
-LOW_TEMPERATURE = -50.0
-HIGH_TEMPERATURE = 1200.0
+MIN_VISCOSITY = 2.0
+MAX_VISCOSITY_40 = 2000.0
+MAX_VISCOSITY_100 = 500.0
+MIN_VISCOSITY_INDEX = -25.0
+MAX_VISCOSITY_INDEX = 400.0
+MIN_TEMPERATURE = -50.0
+MAX_TEMPERATURE = 1200.0
 MIN_BEARING_DIAMETER = 1.0
 MAX_BEARING_DIAMETER = 100_000.0
 MIN_BEARING_WIDTH = 1.0
 MAX_BEARING_WIDTH = 10_000.0
-MIN_RPM = 0.0
-MAX_RPM = 100_000.0
+MIN_RPM = 1.0
+MAX_RPM = 300_000.0
 MIN_ADDITIVE_PERCENT = 0.0
-MAX_ADDITIVE_PERCENT = 40.0
+MAX_ADDITIVE_PERCENT = 50.0
 MIN_DENSITY = 0.7
-MAX_DENSITY = 0.99
+MAX_DENSITY = 1.5
 ASH_CONTRIBUTION = {
     "zinc": 1.50,
     "barium": 1.70,

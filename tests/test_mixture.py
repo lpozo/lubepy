@@ -23,7 +23,11 @@
 import pytest
 
 from lubepy.exceptions import ConceptError
-from lubepy.mixture import OilMixture, mixture_proportions, mixture_viscosity
+from lubepy.lube.mixture import (
+    OilMixture,
+    mixture_proportions,
+    mixture_viscosity,
+)
 
 
 class TestOilMixture:

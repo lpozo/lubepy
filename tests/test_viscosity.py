@@ -24,7 +24,7 @@ import pytest
 from pytest import param
 
 from lubepy.exceptions import ConceptError, ValidationError
-from lubepy.viscosity import (
+from lubepy.lube.viscosity import (
     viscosity_at_40,
     viscosity_at_100,
     viscosity_at_any_temp,
@@ -56,7 +56,7 @@ class TestViscosity:
             viscosity_at_40(viscosity100, index)
 
     @pytest.mark.parametrize(
-        "viscosity100, index", [param("16", "0"), param("16", "401")],
+        "viscosity100, index", [param("16", "-30"), param("16", "401")],
     )
     def test_viscosity_at_40_wrong_index(self, viscosity100, index):
         with pytest.raises(ConceptError):
@@ -92,7 +92,7 @@ class TestViscosity:
         assert viscosity_at_100(viscosity40, index) == expected
 
     @pytest.mark.parametrize(
-        "viscosity40, index", [param("46", "0"), param("46", "401")],
+        "viscosity40, index", [param("46", "-26"), param("46", "401")],
     )
     def test_viscosity_at_100_wrong_index(self, viscosity40, index):
         with pytest.raises(ConceptError):

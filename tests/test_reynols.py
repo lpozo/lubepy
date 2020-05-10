@@ -23,7 +23,12 @@
 import pytest
 from pytest import param
 
-from lubepy.reynolds import FlowType, Reynolds, flow_type, reynolds_number
+from lubepy.fluid.reynolds import (
+    FlowType,
+    Reynolds,
+    flow_type,
+    reynolds_number,
+)
 
 
 class TestReynolds:

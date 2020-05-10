@@ -21,8 +21,8 @@
 
 from typing import Dict
 
-from . import MIN_DENSITY, ASH_CONTRIBUTION
-from .validator import Density, AdditivePercent, MetalContent
+from lubepy import MIN_DENSITY, ASH_CONTRIBUTION
+from lubepy.validator.core import Density, AdditivePercent, MetalContent
 
 
 def additive_percent_mass(

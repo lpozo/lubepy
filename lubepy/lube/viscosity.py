@@ -21,8 +21,8 @@
 
 import math
 
-from . import HIGH_VISCOSITY_40, HIGH_VISCOSITY_100, LOW_VISCOSITY, TO_KELVIN
-from .validator import (
+from lubepy import MAX_VISCOSITY_40, MAX_VISCOSITY_100, MIN_VISCOSITY
+from lubepy.validator.core import (
     validate_viscosity,
     validate_viscosity_index,
     validate_temperature,
@@ -38,7 +38,7 @@ def viscosity_at_40(viscosity100: float, index: float) -> float:
     _index = validate_viscosity_index(index)
     while (
         _viscosity_index(_viscosity, _viscosity100) >= _index
-        and _viscosity <= HIGH_VISCOSITY_40
+        and _viscosity <= MAX_VISCOSITY_40
     ):
         _viscosity += 0.05
 
@@ -50,16 +50,19 @@ def viscosity_at_100(viscosity40: float, index: float) -> float:
 
     Valid for viscosities between 2 and 500 cSt at 100°C.
     """
-    _viscosity = LOW_VISCOSITY
+    _viscosity = MIN_VISCOSITY
     _viscosity40 = validate_viscosity(viscosity40, "40")
     _index = validate_viscosity_index(index)
     while (
         _viscosity_index(_viscosity40, _viscosity) <= _index
-        and _viscosity <= HIGH_VISCOSITY_100
+        and _viscosity <= MAX_VISCOSITY_100
     ):
         _viscosity += 0.01
 
     return round((_viscosity * 100 + 0.01) / 100, 2)
+
+
+_TO_KELVIN = 273.15
 
 
 def viscosity_at_any_temp(
@@ -72,9 +75,9 @@ def viscosity_at_any_temp(
 
     x = math.log10(math.log10(_viscosity40 + 0.7))
     y = math.log10(math.log10(_viscosity100 + 0.7))
-    t0 = math.log10(40 + TO_KELVIN)
-    t1 = math.log10(100 + TO_KELVIN)
-    target_t = math.log10(_temperature + TO_KELVIN)
+    t0 = math.log10(40 + _TO_KELVIN)
+    t1 = math.log10(100 + _TO_KELVIN)
+    target_t = math.log10(_temperature + _TO_KELVIN)
     b = (x - y) / (t1 - t0)
     a = x + b * t0
     v = 10 ** (10 ** (a - b * target_t)) - 0.7
@@ -92,26 +95,27 @@ def viscosity_index(viscosity40: float, viscosity100: float) -> float:
             (L - H)
 
     where:
-    KV40:  kinematic viscosity at 40°C of the oil whose viscosity
-            index is to be calculated mm^2/s (cSt).
-    L: kinematic viscosity at 40°C of an oil of 0 viscosity
-        index having the same kinematic viscosity at 100°C as
-        the oil whose viscosity index is to be calculated,
-        mm^2/s (cSt)
-    H: kinematic viscosity at 40°C of an oil of 100 viscosity
-        index having the same kinematic viscosity at 100°C as
-        the oil whose viscosity index is to be calculated mm 2 /s
-        (cSt)
+        KV40:  kinematic viscosity at 40°C of the oil whose viscosity
+                index is to be calculated mm^2/s (cSt).
+        L: kinematic viscosity at 40°C of an oil of 0 viscosity
+            index having the same kinematic viscosity at 100°C as
+            the oil whose viscosity index is to be calculated,
+            mm^2/s (cSt)
+        H: kinematic viscosity at 40°C of an oil of 100 viscosity
+            index having the same kinematic viscosity at 100°C as
+            the oil whose viscosity index is to be calculated mm 2 /s
+            (cSt)
 
     L = a * KV100^2 + b * KV100 + c
+
     where:
-    KV100: kinematic viscosity at 100°C of the oil whose viscosity
-            index is to be calculated, mm^2/s (cSt)
-    a, b, c: interpolation coefficients
+        KV100: kinematic viscosity at 100°C of the oil whose viscosity
+                index is to be calculated, mm^2/s (cSt)
+        a, b, c: interpolation coefficients
 
     H = d * KV100^2 + e * KV100 + f
     where:
-    d, e, f: interpolation coefficients
+        d, e, f: interpolation coefficients
 
     - Viscosity Index of 100 and Greater
 
@@ -120,10 +124,9 @@ def viscosity_index(viscosity40: float, viscosity100: float) -> float:
              0.00715
 
     where:
-
-          log10(H) - log10(KV40)
-    N = --------------------------
-              log10(KV100)
+              log10(H) - log10(KV40)
+        N = --------------------------
+                  log10(KV100)
     """
     return _viscosity_index(viscosity40, viscosity100)
 
@@ -133,7 +136,7 @@ def _viscosity_index(viscosity40: float, viscosity100: float) -> float:
     _viscosity40 = validate_viscosity(viscosity40, "40")
     _viscosity100 = validate_viscosity(viscosity100, "100")
     upper = float("inf")
-    coefficients = {
+    interpolation_coefs = {
         (2.0, 3.8): (1.14673, 1.7576, -0.109, 0.84155, 1.5521, -0.077),
         (3.8, 4.4): (3.38095, -15.4952, 33.196, 0.78571, 1.7929, -0.183),
         (4.4, 5.0): (2.5, -7.2143, 13.812, 0.82143, 1.5679, 0.119),
@@ -154,7 +157,7 @@ def _viscosity_index(viscosity40: float, viscosity100: float) -> float:
 
     a, b, c, d, e, f = [0.0] * 6
 
-    for k, v in coefficients.items():
+    for k, v in interpolation_coefs.items():
         if k[0] <= _viscosity100 < k[1]:
             a, b, c, d, e, f = v
             break

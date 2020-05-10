@@ -25,7 +25,7 @@ Once you have the `virtualenv` in place and activated, you can install **Lubepy*
 Say you need to find the viscosity index of an oil. You have viscosity at 40ºC degrees of 104.7 cSt and a viscosity at 100ºC degrees of 13.9 cSt. You can do something like this:
 
 ```python
-from lubepy.viscosity import viscosity_index
+from lubepy.lube.viscosity import viscosity_index
 viscosity_index(104.7, 13.9)
 
 # Output: 134
@@ -36,7 +36,7 @@ The viscosity index of an oil gives you an idea of how fast the viscosity dimini
 Now, suppose you have an oil with a viscosity index of 130 and a viscosity at 40ºC degrees of 112 cSt. You need to know what will be the viscosity of your oil at 100ºC degrees. To solve this problem you can do something like this:
 
 ```python
-from lubepy.viscosity import viscosity_at_100
+from lubepy.lube.viscosity import viscosity_at_100
 viscosity_at_100(112, 130)
 
 # Output: 14.38

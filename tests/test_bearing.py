@@ -24,7 +24,7 @@ import pytest
 from pytest import param
 
 from lubepy import MIN_BEARING_DIAMETER
-from lubepy.bearing import (
+from lubepy.device.bearing import (
     Bearing,
     grace_amount,
     lubrication_frequency,

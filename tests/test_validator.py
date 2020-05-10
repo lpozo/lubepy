@@ -24,7 +24,7 @@ import pytest
 from pytest import param
 
 from lubepy.exceptions import ValidationError, ConceptError
-from lubepy.validator import (
+from lubepy.validator.core import (
     validate_viscosity,
     validate_viscosity_index,
     validate_temperature,
@@ -77,7 +77,7 @@ class TestValidator:
         assert validate_viscosity_index(viscosity_index) == expected
 
     @pytest.mark.parametrize(
-        "viscosity_index", [param("-1"), param("500"), param("400.1")],
+        "viscosity_index", [param("-26"), param("500"), param("400.1")],
     )
     def test_viscosity_index_wrong_value(self, viscosity_index):
         with pytest.raises(ConceptError):
