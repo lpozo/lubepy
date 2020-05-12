@@ -23,6 +23,7 @@ from math import isinf, isnan
 
 from lubepy import (
     MIN_VISCOSITY,
+    MAX_VISCOSITY_MINUS_5,
     MAX_VISCOSITY_40,
     MAX_VISCOSITY_100,
     MIN_VISCOSITY_INDEX,
@@ -46,7 +47,11 @@ from lubepy.exceptions import ConceptError, ValidationError
 
 
 def validate_viscosity(value, temperature: str) -> float:
-    upper_limit = {"40": MAX_VISCOSITY_40, "100": MAX_VISCOSITY_100}
+    upper_limit = {
+        "-5": MAX_VISCOSITY_MINUS_5,
+        "40": MAX_VISCOSITY_40,
+        "100": MAX_VISCOSITY_100,
+    }
     validate = ParamValidator()
     return validate(
         param=f"Viscosity at {temperature}",
@@ -128,8 +133,19 @@ class BaseParam:
         return self._value
 
 
+class Temperature(BaseParam):
+    """Descriptor class for validating temperature."""
+
+    def __set__(self, instance, value):
+        temperature = str(value).strip()
+        if temperature in {"-5", "40", "100"}:
+            self._value = temperature
+        else:
+            raise ConceptError(f"{self._name} must be -5ºC, 40ºC or 100ºC")
+
+
 class Diameter(BaseParam):
-    """Descriptor class for validating Bearing diameters."""
+    """Descriptor class for validating bearing diameters."""
 
     def __set__(self, instance, value):
         self._value = self._validate(
@@ -138,7 +154,7 @@ class Diameter(BaseParam):
 
 
 class Width(BaseParam):
-    """Descriptor class for validating Bearing widths."""
+    """Descriptor class for validating bearing widths."""
 
     def __set__(self, instance, value):
         self._value = self._validate(
@@ -147,7 +163,7 @@ class Width(BaseParam):
 
 
 class Rpm(BaseParam):
-    """Descriptor class for validating Bearing rpm."""
+    """Descriptor class for validating bearing rpm."""
 
     def __set__(self, instance, value):
         self._value = self._validate(self._name, value, MIN_RPM, MAX_RPM)

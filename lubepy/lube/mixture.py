@@ -23,6 +23,7 @@ import math
 from collections import namedtuple
 
 from lubepy.exceptions import ConceptError
+from lubepy.validator.core import Temperature, validate_viscosity
 
 
 def mixture_viscosity(
@@ -32,9 +33,9 @@ def mixture_viscosity(
     temperature: str,
 ) -> float:
     """Return the resulting viscosity of a mix of two base oils."""
-    return OilMixture(first_viscosity, second_viscosity,).mixture_viscosity(
-        first_oil_percent, temperature
-    )
+    return OilMixture(
+        first_viscosity, second_viscosity, temperature
+    ).mixture_viscosity(first_oil_percent)
 
 
 _Proportions = namedtuple(
@@ -49,37 +50,43 @@ def mixture_proportions(
     temperature: str,
 ) -> _Proportions:
     """Return proportions to get a mixture of a given viscosity."""
-    return OilMixture(first_viscosity, second_viscosity,).mixture_proportions(
-        desired_viscosity, temperature
-    )
+    return OilMixture(
+        first_viscosity, second_viscosity, temperature
+    ).mixture_proportions(desired_viscosity)
 
 
 class OilMixture:
     """Class to provide calculations on oil mixtures."""
 
+    temperature = Temperature("Temperature")
+
     def __init__(
-        self, first_viscosity: float, second_viscosity: float,
+        self, first_viscosity: float, second_viscosity: float, temperature: str
     ) -> None:
         """Class initializer."""
-        self.first_viscosity = first_viscosity
-        self.second_viscosity = second_viscosity
+        self.temperature = temperature
+        self.first_viscosity = validate_viscosity(
+            first_viscosity, self.temperature
+        )
+        self.second_viscosity = validate_viscosity(
+            second_viscosity, self.temperature
+        )
         self.temp_map = {"100": 1.8, "40": 4.1, "-5": 1.9}
 
-    def mixture_viscosity(
-        self, first_oil_percent: float, temperature: str
-    ) -> float:
+    def mixture_viscosity(self, first_oil_percent: float) -> float:
         """Return the resulting viscosity of a mix of two base oils.
 
         Mixture KV = e ^ (a * e ^ (x1 * log(b / a))) - K
 
         Where:
-            K: Temperature coefficient
-            x1: Percent coefficient for base oil # 1
+            x1: Proportion of base oil # 1
             a = log(KV2 + K)
             b = log(KV1 + K)
                 KV1, KV2: Kinematic Viscosity of oil # 1 and # 2 (cSt)
+            K: Temperature correction
+
         """
-        K = self.temp_map[temperature]
+        K = self.temp_map[self.temperature]
         x1 = first_oil_percent / 100
         a = math.log(self.second_viscosity + K)
         b = math.log(self.first_viscosity + K)
@@ -87,19 +94,20 @@ class OilMixture:
 
         return round(mix_viscosity, 2)
 
-    def mixture_proportions(
-        self, desired_viscosity: float, temperature: str
-    ) -> _Proportions:
+    def mixture_proportions(self, desired_viscosity: float) -> _Proportions:
         """Return proportions to get a mixture of a given viscosity.
 
         first_oil_percent = 100 * (math.log(a / c) / math.log(b / c))
 
         Where:
-            K: Temperature coefficient
             a = math.log(desired_viscosity + K)
             b = math.log(KV1 + K)
             c = math.log(KV2 + K)
+                K: Temperature correction
+
         """
+
+        desired_viscosity = validate_viscosity(desired_viscosity, self.temperature)
 
         if not (
             self.first_viscosity <= desired_viscosity <= self.second_viscosity
@@ -111,7 +119,7 @@ class OilMixture:
                 "Mixture viscosity must be inside the viscosity interval"
             )
 
-        K = self.temp_map[temperature]
+        K = self.temp_map[self.temperature]
         a = math.log(desired_viscosity + K)
         b = math.log(self.first_viscosity + K)
         c = math.log(self.second_viscosity + K)
