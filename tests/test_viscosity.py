@@ -160,7 +160,7 @@ class TestViscosity:
 
     @pytest.mark.parametrize(
         "viscosity40, viscosity100",
-        [param("16", "1"), param("1", "100"), param("16", "600"),],
+        [param("16", "1"), param("1", "100"), param("16", "600")],
     )
     def test_viscosity_index_wrong_params(self, viscosity40, viscosity100):
         with pytest.raises(ConceptError):
