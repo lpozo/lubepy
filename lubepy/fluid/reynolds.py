@@ -17,40 +17,69 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
-"""This module provides the Reynold class."""
+"""This module provides the Reynold number calculations."""
 
 from enum import Enum
 
 
-class FlowType(Enum):
-    """Enumeration to represent the flow type."""
-
-    LAMINAR: str = "laminar"
-    TURBULENT: str = "turbulent"
-    MIXED: str = "mixed"
-
-
-def reynolds_number(velocity: float, length: float, viscosity: float) -> float:
+def reynolds_circular_session(
+    velocity: float, viscosity: float, diameter: float
+) -> float:
     """Calculate Reynolds number (Re)."""
-    return Reynolds(velocity, length, viscosity).reynolds_number()
+    return ReynoldsNumber(velocity, viscosity).reynolds_circular_session(
+        diameter
+    )
 
 
-def flow_type(velocity: float, length: float, viscosity: float) -> str:
+def reynolds_square_session(
+    velocity: float, viscosity: float, side: float
+) -> float:
+    """Calculate Reynolds number (Re)."""
+    return ReynoldsNumber(velocity, viscosity).reynolds_square_session(side)
+
+
+def reynolds_rectangular_session(
+    velocity: float, viscosity: float, base: float, height: float
+) -> float:
+    """Calculate Reynolds number (Re)."""
+    return ReynoldsNumber(velocity, viscosity).reynolds_rectangular_session(
+        base, height
+    )
+
+
+def flow_type_circular_session(
+    velocity: float, viscosity: float, diameter: float
+) -> str:
     """Determine the flow type of a fluid."""
-    return Reynolds(velocity, length, viscosity).flow_type()
+    return FluidFlowType(velocity, viscosity).flow_type_circular_session(
+        diameter
+    )
 
 
-class Reynolds:
+def flow_type_square_session(
+    velocity: float, viscosity: float, side: float
+) -> str:
+    """Determine the flow type of a fluid."""
+    return FluidFlowType(velocity, viscosity).flow_type_square_session(side)
+
+
+def flow_type_rectangular_session(
+    velocity: float, viscosity: float, base: float, height: float
+) -> str:
+    """Determine the flow type of a fluid."""
+    return FluidFlowType(velocity, viscosity).flow_type_rectangular_session(
+        base, height
+    )
+
+
+class ReynoldsNumber:
     """Class for calculations related to Reynolds number."""
 
-    def __init__(
-        self, velocity: float, length: float, viscosity: float
-    ) -> None:
+    def __init__(self, velocity: float, viscosity: float) -> None:
         self.velocity = velocity
-        self.length = length
         self.viscosity = viscosity
 
-    def reynolds_number(self) -> float:
+    def _reynolds_number(self, length) -> float:
         """Calculate Reynolds number (Re).
 
               V * Lc
@@ -69,19 +98,59 @@ class Reynolds:
                     a, b: sides
             v: Kinematic Viscosity (m^2/s)
         """
-        return round(self.velocity * self.length / self.viscosity, 1)
+        return round(self.velocity * length / self.viscosity, 1)
 
-    def flow_type(self) -> str:
+    def reynolds_circular_session(self, diameter):
+        return self._reynolds_number(length=diameter)
+
+    def reynolds_square_session(self, side):
+        return self._reynolds_number(length=side)
+
+    def reynolds_rectangular_session(self, base, height):
+        return self._reynolds_number(
+            length=(2 * base * height) / (base + height)
+        )
+
+
+class _FlowTypes(Enum):
+    """Enumeration to represent the flow type."""
+
+    LAMINAR: str = "laminar"
+    TURBULENT: str = "turbulent"
+    MIXED: str = "mixed"
+
+
+class FluidFlowType:
+    def __init__(self, velocity, viscosity):
+        self._velocity = velocity
+        self._viscosity = viscosity
+        self._reynolds_number = ReynoldsNumber(self._velocity, self._viscosity)
+
+    @staticmethod
+    def _flow_type(number: float) -> _FlowTypes:
         """Determine the flow type of a fluid.
 
         Re < 2000 => Laminar flow
         2000.0 < reynolds < 4000.0 => Mixed flow
         Re > 4000 => Turbulent flow
         """
-        reynolds = self.reynolds_number()
-        if reynolds <= 2000.0:
-            return FlowType.LAMINAR
-        if reynolds >= 4000.0:
-            return FlowType.TURBULENT
+        if number <= 2_000.0:
+            return _FlowTypes.LAMINAR
+        if number >= 4_000.0:
+            return _FlowTypes.TURBULENT
 
-        return FlowType.MIXED
+        return _FlowTypes.MIXED
+
+    def flow_type_circular_session(self, diameter):
+        number = self._reynolds_number.reynolds_circular_session(diameter)
+        return self._flow_type(number)
+
+    def flow_type_square_session(self, side):
+        number = self._reynolds_number.reynolds_square_session(side)
+        return self._flow_type(number)
+
+    def flow_type_rectangular_session(self, base, height):
+        number = self._reynolds_number.reynolds_rectangular_session(
+            base, height
+        )
+        return self._flow_type(number)

@@ -24,34 +24,135 @@ import pytest
 from pytest import param
 
 from lubepy.fluid.reynolds import (
-    FlowType,
-    Reynolds,
-    flow_type,
-    reynolds_number,
+    _FlowTypes,
+    FluidFlowType,
+    ReynoldsNumber,
+    reynolds_circular_session,
+    flow_type_circular_session,
+    flow_type_square_session,
+    flow_type_rectangular_session,
+    reynolds_square_session,
+    reynolds_rectangular_session,
 )
 
 
 class TestReynolds:
     """Class to test Reynolds."""
 
-    def test_reynolds_number(self):
-        reynolds = Reynolds(velocity=15.0, length=0.10, viscosity=3.0)
-        assert reynolds.reynolds_number() == 0.5
-
-    def test_reynolds_number_func(self):
-        assert reynolds_number(15.0, 0.10, 3) == 0.5
-
     @pytest.mark.parametrize(
-        "velocity, length, viscosity, expected",
+        "velocity, viscosity, diameter, expected",
         [
-            param(15.0, 0.1, 3.0, FlowType.LAMINAR),
-            param(600.0, 20.0, 3.0, FlowType.TURBULENT),
-            param(600.0, 15.0, 3.0, FlowType.MIXED),
+            param(15.0, 32.0, 0.15, 0.1),
+            param(6_000.0, 5.0, 2.0, 2_400.0),
+            param(10_000.0, 5.0, 2.5, 5_000.0),
         ],
     )
-    def test_reynolds_flow_type(self, velocity, length, viscosity, expected):
-        reynolds = Reynolds(velocity, length, viscosity)
-        assert reynolds.flow_type() == expected
+    def test_reynolds_circular_session(
+        self, velocity, viscosity, diameter, expected
+    ):
+        reynolds = ReynoldsNumber(velocity, viscosity)
+        assert reynolds.reynolds_circular_session(diameter) == expected
 
-    def test_reynolds_flow_type_func(self):
-        assert flow_type(15.0, 0.10, 3) == FlowType.LAMINAR
+    @pytest.mark.parametrize(
+        "velocity, viscosity, diameter, expected",
+        [
+            param(15.0, 32.0, 0.15, 0.1),
+            param(6_000.0, 5.0, 2.0, 2_400.0),
+            param(10_000.0, 5.0, 2.5, 5_000.0),
+        ],
+    )
+    def test_reynolds_circular_session_func(
+        self, velocity, viscosity, diameter, expected
+    ):
+        assert (
+            reynolds_circular_session(velocity, viscosity, diameter)
+            == expected
+        )
+
+    @pytest.mark.parametrize(
+        "velocity, viscosity, side, expected",
+        [
+            param(15.0, 32.0, 0.15, 0.1),
+            param(6_000.0, 5.0, 2.0, 2_400.0),
+            param(10_000.0, 5.0, 2.5, 5_000.0),
+        ],
+    )
+    def test_reynolds_square_session_func(
+        self, velocity, viscosity, side, expected
+    ):
+        assert reynolds_square_session(velocity, viscosity, side) == expected
+
+    @pytest.mark.parametrize(
+        "velocity, viscosity, base, height, expected",
+        [
+            param(15.0, 32.0, 0.15, 0.2, 0.1),
+            param(6_000.0, 5.0, 2.0, 5, 3_428.6),
+            param(10_000.0, 5.0, 2.5, 10, 8_000.0),
+        ],
+    )
+    def test_reynolds_rectangular_session_func(
+        self, velocity, viscosity, base, height, expected
+    ):
+        assert (
+            reynolds_rectangular_session(velocity, viscosity, base, height)
+            == expected
+        )
+
+    @pytest.mark.parametrize(
+        "velocity, viscosity, diameter, expected",
+        [
+            param(15.0, 32.0, 0.15, _FlowTypes.LAMINAR),
+            param(6_000.0, 5.0, 2.0, _FlowTypes.MIXED),
+            param(10_000.0, 5.0, 2.5, _FlowTypes.TURBULENT),
+        ],
+    )
+    def test_flow_type_circular_session(
+        self, velocity, viscosity, diameter, expected
+    ):
+        flow = FluidFlowType(velocity, viscosity)
+        assert flow.flow_type_circular_session(diameter) == expected
+
+    @pytest.mark.parametrize(
+        "velocity, viscosity, diameter, expected",
+        [
+            param(15.0, 32.0, 0.15, _FlowTypes.LAMINAR),
+            param(6_000.0, 5.0, 2.0, _FlowTypes.MIXED),
+            param(10_000.0, 5.0, 2.5, _FlowTypes.TURBULENT),
+        ],
+    )
+    def test_flow_type_circular_session_func(
+        self, velocity, viscosity, diameter, expected
+    ):
+        assert (
+            flow_type_circular_session(velocity, viscosity, diameter)
+            == expected
+        )
+
+    @pytest.mark.parametrize(
+        "velocity, viscosity, side, expected",
+        [
+            param(15.0, 32.0, 0.15, _FlowTypes.LAMINAR),
+            param(6_000.0, 5.0, 2.0, _FlowTypes.MIXED),
+            param(10_000.0, 5.0, 2.5, _FlowTypes.TURBULENT),
+        ],
+    )
+    def test_flow_type_square_session_func(
+        self, velocity, viscosity, side, expected
+    ):
+        assert flow_type_square_session(velocity, viscosity, side) == expected
+
+    @pytest.mark.parametrize(
+        "velocity, viscosity, base, height, expected",
+        [
+            param(15.0, 32.0, 0.15, 0.2, _FlowTypes.LAMINAR),
+            param(6_000.0, 5.0, 2.0, 5, _FlowTypes.MIXED),
+            param(10_000.0, 5.0, 2.5, 10, _FlowTypes.TURBULENT),
+        ],
+    )
+    def test_flow_type_rectangular_session_func(
+        self, velocity, viscosity, base, height, expected
+    ):
+        assert (
+            flow_type_rectangular_session(velocity, viscosity, base, height)
+            == expected
+        )
