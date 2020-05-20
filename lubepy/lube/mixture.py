@@ -107,7 +107,9 @@ class OilMixture:
 
         """
 
-        desired_viscosity = validate_viscosity(desired_viscosity, self.temperature)
+        desired_viscosity = validate_viscosity(
+            desired_viscosity, self.temperature
+        )
 
         if not (
             self.first_viscosity <= desired_viscosity <= self.second_viscosity

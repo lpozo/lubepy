@@ -36,10 +36,14 @@ from lubepy import (
     MAX_BEARING_WIDTH,
     MIN_RPM,
     MAX_RPM,
-    MIN_DENSITY,
-    MAX_DENSITY,
+    MIN_OIL_DENSITY,
+    MAX_OIL_DENSITY,
     MIN_ADDITIVE_PERCENT,
     MAX_ADDITIVE_PERCENT,
+    MIN_FLOW_RATE,
+    MAX_FLOW_RATE,
+    MIN_PIPE_EQUIVALENT_DIAMETER,
+    MAX_PIPE_EQUIVALENT_DIAMETER,
     ASH_CONTRIBUTION,
 )
 
@@ -144,7 +148,7 @@ class Temperature(BaseParam):
             raise ConceptError(f"{self._name} must be -5ºC, 40ºC or 100ºC")
 
 
-class Diameter(BaseParam):
+class BearingDiameter(BaseParam):
     """Descriptor class for validating bearing diameters."""
 
     def __set__(self, instance, value):
@@ -153,7 +157,7 @@ class Diameter(BaseParam):
         )
 
 
-class Width(BaseParam):
+class BearingWidth(BaseParam):
     """Descriptor class for validating bearing widths."""
 
     def __set__(self, instance, value):
@@ -169,12 +173,12 @@ class Rpm(BaseParam):
         self._value = self._validate(self._name, value, MIN_RPM, MAX_RPM)
 
 
-class Density(BaseParam):
-    """Descriptor class for validating density."""
+class OilDensity(BaseParam):
+    """Descriptor class for validating density in g/ml."""
 
     def __set__(self, instance, value):
         self._value = self._validate(
-            self._name, value, MIN_DENSITY, MAX_DENSITY
+            self._name, value, MIN_OIL_DENSITY, MAX_OIL_DENSITY
         )
 
 
@@ -204,3 +208,24 @@ class MetalContent(BaseParam):
         for metal in self._value:
             if metal not in ASH_CONTRIBUTION:
                 raise ConceptError(f"{metal} is not a valid additive metal")
+
+
+class FlowRate(BaseParam):
+    """Descriptor class for validating a flow velocity in m/s."""
+
+    def __set__(self, instance, value):
+        self._value = self._validate(
+            self._name, value, MIN_FLOW_RATE, MAX_FLOW_RATE
+        )
+
+
+class PipeSession(BaseParam):
+    """Descriptor class for validating the session of a pipe in mm."""
+
+    def __set__(self, instance, value):
+        self._value = self._validate(
+            self._name,
+            value,
+            MIN_PIPE_EQUIVALENT_DIAMETER,
+            MAX_PIPE_EQUIVALENT_DIAMETER,
+        )

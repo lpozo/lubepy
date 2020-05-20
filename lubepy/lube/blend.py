@@ -21,8 +21,8 @@
 
 from typing import Dict
 
-from lubepy import MIN_DENSITY, ASH_CONTRIBUTION
-from lubepy.validator.core import Density, AdditivePercent, MetalContent
+from lubepy import MIN_OIL_DENSITY, ASH_CONTRIBUTION
+from lubepy.validator.core import OilDensity, AdditivePercent, MetalContent
 
 
 def additive_percent_mass(
@@ -37,7 +37,7 @@ def additive_percent_mass(
 def total_ash(metal_content: dict, additive_percent: float) -> float:
     """Calculate the total content of sulfated ash."""
     return OilBlend(
-        additive_percent, MIN_DENSITY, MIN_DENSITY, metal_content
+        additive_percent, MIN_OIL_DENSITY, MIN_OIL_DENSITY, metal_content
     ).total_ash()
 
 
@@ -45,8 +45,8 @@ class OilBlend:
     """Class to calculate some parameters of a motor oil blend."""
 
     additive_percent = AdditivePercent("Additive percent")
-    additive_density = Density("Additive density")
-    oil_density = Density("Oil density")
+    additive_density = OilDensity("Additive density")
+    oil_density = OilDensity("Oil density")
     metal_content = MetalContent("Metal content")
 
     def __init__(
@@ -60,7 +60,7 @@ class OilBlend:
 
         additive_percent: Total % of additive in the blend (% volume)
         additive_density: Additive package density (kg/L)
-        oil_density: Density of the finished oil (kg/L)
+        oil_density: OilDensity of the finished oil (kg/L)
         metal_content: Metallic additive content (% mass)
             e.g {'Calcium': 0.47, 'Magnesium': 1.15, 'Zinc': 1.66}
         """
@@ -72,9 +72,9 @@ class OilBlend:
     def additive_percent_mass(self) -> float:
         """Calculate the % by mass of Additive in a motor oil.
 
-                                Additive Density (kg/L) * Additive (% volume)
+                                Additive OilDensity (kg/L) * Additive (% volume)
         Additive (% mass) = ---------------------------------------------------
-                                       Density of Finished Oil (kg/L)
+                                       OilDensity of Finished Oil (kg/L)
         """
         return round(
             (self.additive_density * self.additive_percent) / self.oil_density,

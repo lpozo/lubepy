@@ -29,7 +29,7 @@ from lubepy import (
     MIN_RPM,
 )
 from lubepy.exceptions import ConceptError
-from lubepy.validator.core import Diameter, Rpm, Width
+from lubepy.validator.core import BearingDiameter, Rpm, BearingWidth
 
 
 def grace_amount(outer_diameter: float, width: float) -> float:
@@ -56,9 +56,9 @@ def velocity_factor(
 class Bearing:
     """Class to define calculations related with bearings."""
 
-    outer_diameter = Diameter("Bearing outer diameter")
-    inner_diameter = Diameter("Bearing inner diameter")
-    width = Width("Bearing Width")
+    outer_diameter = BearingDiameter("Bearing outer diameter")
+    inner_diameter = BearingDiameter("Bearing inner diameter")
+    width = BearingWidth("Bearing BearingWidth")
     rpm = Rpm("Bearing rpm")
 
     def __init__(
