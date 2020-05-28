@@ -28,8 +28,7 @@ URL = "https://github.com/lpozo/lubepy"
 EMAIL = "lpozor78@gmail.com"
 AUTHOR = "Leodanis Pozo Ramos"
 REQUIRES_PYTHON = ">3"
-VERSION = (0, 1, 0)
-__version__ = ".".join(str(item) for item in VERSION)
+VERSION = "1.0a0"
 
 # Package constants
 MIN_VISCOSITY = 2.0  # cSt

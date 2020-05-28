@@ -43,7 +43,7 @@ except FileNotFoundError:
 
 setup(
     name=__about__["NAME"],
-    version=__about__["__version__"],
+    version=__about__["VERSION"],
     description=__about__["DESCRIPTION"],
     long_description=__long_description__,
     long_description_content_type="text/markdown",
