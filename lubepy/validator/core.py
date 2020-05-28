@@ -195,15 +195,15 @@ class MetalContent(BaseParam):
     """Descriptor class for validating metal content dict."""
 
     def __set__(self, instance, value):
-        if isinstance(value, dict):
-            self._value = {
-                k.strip().lower(): self._validate(f"{self._name} for {k}", v)
-                for k, v in value.items()
-            }
-        else:
-            raise ConceptError(
+        if not isinstance(value, dict):
+            raise TypeError(
                 f"{self._name} must be a dictionary object not {type(value)}"
             )
+
+        self._value = {
+            k.strip().lower(): self._validate(f"{self._name} for {k}", v)
+            for k, v in value.items()
+        }
 
         for metal in self._value:
             if metal not in ASH_CONTRIBUTION:

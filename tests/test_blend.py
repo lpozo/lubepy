@@ -97,6 +97,15 @@ class TestOilBlend:
         )
         assert self.blend.total_ash() == 0.83
 
+    def test_total_ash_wrong_metal_content(self):
+        with pytest.raises(TypeError):
+            self.blend = OilBlend(
+                additive_percent=8.5,
+                additive_density=0.959,
+                oil_density=0.881,
+                metal_content=(0.47, 1.15, 1.66),
+            )
+
     def test_total_ash_func(self):
         assert (
             total_ash(
