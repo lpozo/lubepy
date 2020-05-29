@@ -49,22 +49,22 @@ There are a lot more calculations that you can perform with **Lubepy**. Unfortun
 ```python
 >>> from lubepy.lube import viscosity
 >>> help(viscosity)
-
-# Output
-Help on module lubepy.lube.viscosity in lubepy.lube:
-
-NAME
-    lubepy.lube.viscosity - This module provides viscosity calculations.
-
-FUNCTIONS
-    viscosity_at_100(viscosity40: float, index: float) -> float
-        Calculate the Kinematic Viscosity (KV) at 100°C.
-        
-        Valid for viscosities between 2 and 500 cSt at 100°C.
-    
-    viscosity_at_40(viscosity100: float, index: float) -> float
-...
 ```
+
+    # Output
+    Help on module lubepy.lube.viscosity in lubepy.lube:
+    
+    NAME
+        lubepy.lube.viscosity - This module provides viscosity calculations.
+    
+    FUNCTIONS
+        viscosity_at_100(viscosity40: float, index: float) -> float
+            Calculate the Kinematic Viscosity (KV) at 100°C.
+            
+            Valid for viscosities between 2 and 500 cSt at 100°C.
+        
+        viscosity_at_40(viscosity100: float, index: float) -> float
+    ...
 
 ## Authors
 
