@@ -17,16 +17,4 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
-"""This module provides custom Exceptions classes."""
-
-
-class ValidationError(Exception):
-    """Custom exception class to handle validation errors."""
-
-    ...
-
-
-class ConceptError(ValidationError):
-    """Custom exception class to handle concept errors."""
-
-    ...
+"""This module provides the fluid package."""

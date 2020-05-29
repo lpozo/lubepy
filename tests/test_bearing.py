@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# File name: test_bearing.py
-#
-# Copyright (C) 2018 Leodanis Pozo Ramos <lpozor78@gmail.com>
+# Copyright (C) 2020 Leodanis Pozo Ramos <lpozor78@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,59 +21,90 @@
 """This module provides tests for bearing.py."""
 
 import pytest
+from pytest import param
 
-from lubepy import bearing
+from lubepy import MIN_BEARING_DIAMETER
+from lubepy.device.bearing import (
+    Bearing,
+    grace_amount,
+    lubrication_frequency,
+    velocity_factor,
+)
+from lubepy.exceptions import ConceptError, ValidationError
 
 
 class TestBearing:
     """Class to test Bearing class."""
 
-    def setup(self):
-        self.bearing = bearing.Bearing(0.0, 0.0, 0.0)
+    @pytest.mark.parametrize(
+        "outer, inner, width",
+        [
+            param(20, 40, 1),
+            param(0, 40, 1),
+            param(60, 40, -5),
+            param(60, 0, 1),
+            param("0", "40", "1"),
+        ],
+    )
+    def test_bearing_class(self, outer, inner, width):
+        with pytest.raises(ConceptError):
+            Bearing(outer, inner, width)
+
+    @pytest.mark.parametrize(
+        "outer, inner, width",
+        [
+            param("", 40, 1),
+            param(60, "", 1),
+            param(60, 40, ""),
+            param(60, 40, float("inf")),
+            param(60, float("nan"), 1),
+        ],
+    )
+    def test_bearing_class_wrong_number(self, outer, inner, width):
+        with pytest.raises(ValidationError):
+            Bearing(outer, inner, width)
 
     @pytest.mark.parametrize(
         "outer_diameter, width, expected",
-        [(25, 60, 7.5)])
+        [param(25, 60, 7.5), param("25", "60", 7.5)],
+    )
     def test_grease_amount(self, outer_diameter, width, expected):
         """Test grease_amount()."""
-        self.bearing.outer_diameter = outer_diameter
-        self.bearing.width = width
-        assert self.bearing.grease_amount() == expected
+        bearing = Bearing(outer_diameter, MIN_BEARING_DIAMETER, width)
+        assert bearing.grease_amount() == expected
 
     @pytest.mark.parametrize(
-        "outer_diameter, width, expected",
-        [(25, 60, 7.5)])
+        "outer_diameter, width, expected", [param(25, 60, 7.5)]
+    )
     def test_grace_amount_func(self, outer_diameter, width, expected):
-        assert bearing.grace_amount(outer_diameter, width) == expected
+        assert grace_amount(outer_diameter, width) == expected
 
     def test_lubrication_frequency(self):
         """Test lubrication_frequency()."""
-        self.bearing.inner_diameter = 20
-        assert self.bearing.lubrication_frequency(rpm=1750.0,
-                                                  ft=0,
-                                                  fc=1,
-                                                  fh=2,
-                                                  fv=0,
-                                                  fp=0,
-                                                  fd=2) == 478
+        bearing = Bearing(40, 20, 1)
+        assert (
+            bearing.lubrication_frequency(
+                rpm=1750.0, factors=dict(ft=0, fc=1, fh=2, fv=0, fp=0, fd=2)
+            )
+            == 478
+        )
 
     def test_lubrication_frequency_func(self):
         """Test lubrication_frequency()."""
-        assert bearing.lubrication_frequency(inner_diameter=20,
-                                             rpm=1750.0,
-                                             ft=0,
-                                             fc=1,
-                                             fh=2,
-                                             fv=0,
-                                             fp=0,
-                                             fd=2) == 478
+        assert (
+            lubrication_frequency(
+                inner_diameter=20,
+                rpm=1750.0,
+                factors=dict(ft=0, fc=1, fh=2, fv=0, fp=0, fd=2),
+            )
+            == 478
+        )
 
     def test_velocity_factor(self):
         """Test speed_factor()."""
-        self.bearing.outer_diameter = 58
-        self.bearing.inner_diameter = 45
-        assert self.bearing.velocity_factor(3000) == 154500
+        bearing = Bearing(58, 45, 1)
+        assert bearing.velocity_factor(3000) == 154500
 
     def test_velocity_factor_func(self):
         """Test speed_factor()."""
-        assert bearing.velocity_factor(58, 45, 3000) == 154500
+        assert velocity_factor(58, 45, 3000) == 154500
