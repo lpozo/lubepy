@@ -27,7 +27,7 @@ DESCRIPTION = (
 URL = "https://github.com/lpozo/lubepy"
 EMAIL = "lpozor78@gmail.com"
 AUTHOR = "Leodanis Pozo Ramos"
-REQUIRES_PYTHON = ">3"
+REQUIRES_PYTHON = ">=3.6"
 VERSION = "1.0a0"
 
 # Package constants
